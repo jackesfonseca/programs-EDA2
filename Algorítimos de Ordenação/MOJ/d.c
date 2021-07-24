@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 void insertion_sort(int vet[], int left, int right);
-void cmpexch(int vet[], int current);
 
 int main() {
 	int vet[50000], value;
@@ -30,19 +29,14 @@ int main() {
 
 //sorting data
 void insertion_sort(int vet[], int left, int right) {
-	for(int i=0; i<right; i++) {
-		for(int j=i; j>left; j--) {
-			cmpexch(vet, j);
+	int temp, i, j;
+
+	for(i=1; i<right; i++) {
+		temp=vet[i];
+		for(j=i; (j>0) && (temp<vet[j - 1]); j--) {
+			vet[j] = vet[j-1];
 		}
+		vet[j] = temp;
 	}
 
-}
-
-//compare and change values if necessary
-void cmpexch(int vet[], int current) {
-	if(vet[current] < vet[current-1]) {
-		int temp = vet[current];
-		vet[current] = vet[current-1];
-		vet[current-1] = temp;
-	}
 }
