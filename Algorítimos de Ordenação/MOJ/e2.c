@@ -1,18 +1,24 @@
 #include <stdio.h>
 
-void insertion_sort(int vet_cod[], char vet_inst[][20], int left, int right);
+typedef struct 
+{
+	int cod;
+	char instruction[20];
+}Instructions;
+
+void insertion_sort(Instructions instructions[], int left, int right);
 
 int main() {
-	int cods[50000], consult_cod[50000], cod, tam, i=0, j, flag=0, control=0;
-	char instructions[50000][20];
+	Instructions instructions[50000];
+	int consult_cod[50000], cod, tam, i=0, j, flag=0, control=0;
 
 	//get amount of instructions
 	scanf("%d", &tam);
 
 	//Read instruction and cods
 	while(i<tam) {
-		scanf("%d%s", &cod, instructions[i]);
-		cods[i] = cod;
+		scanf("%d%s", &cod, instructions[i].instruction);
+		instructions[i].cod = cod;
 		i++;
 	}
 
@@ -25,13 +31,13 @@ int main() {
 	}
 	
 	//sort data
-	insertion_sort(cods, instructions, 0, tam);
+	insertion_sort(instructions, 0, tam);
 
 	//print results
 	for(i=0; i<flag; i++) { //cods
 		for(j=0; j<tam; j++) { //consult_cod
-			if(consult_cod[i] == cods[j]) {
-				printf("%s\n", instructions[j]);
+			if(consult_cod[i] == instructions[j].cod) {
+				printf("%s\n", instructions[j].instruction);
 				control = 1; //found
 			}
 		}
@@ -46,20 +52,20 @@ int main() {
 }
 
 //sorting data
-void insertion_sort(int vet_cod[], char vet_inst[][20], int left, int right) {
-	int temp_cod, i, j;
-	char temp_inst[20];
+void insertion_sort(Instructions instructions[], int left, int right) {
+	int temp, i, j;
+	//char temp_inst[20];
 
 	for(i=1; i<right; i++) {
-		temp_cod = vet_cod[i];
-		temp_inst = vet_inst[i];
+		temp = instructions[i].cod;
+		//temp_inst = vet_inst[i];
 		//move os valores maiores para frente
-		for(j=i; (j>0) && (temp_cod<vet_cod[j - 1]); j--) {
-			vet_cod[j] = vet_cod[j-1];
-			vet_inst[j] = vet_inst[j-1];
+		for(j=i; (j>0) && (temp<instructions[j-1].cod); j--) {
+			instructions[j].cod = instructions[j-1].cod;
+			//vet_inst[j] = vet_inst[j-1];
 		}
-		vet_cod[j] = temp_cod;
-		vet_inst = temp_inst;
+		instructions[j].cod = temp;
+		//vet_inst = temp_inst;
 	}
 
 }
