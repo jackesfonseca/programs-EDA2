@@ -33,6 +33,7 @@ void insertion_sort(int vet[], int left, int right) {
 
 	for(i=1; i<right; i++) {
 		temp=vet[i];
+		//move os valores maiores para frente
 		for(j=i; (j>0) && (temp<vet[j - 1]); j--) {
 			vet[j] = vet[j-1];
 		}
