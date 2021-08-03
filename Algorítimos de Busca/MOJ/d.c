@@ -1,65 +1,60 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-void binary_search(int vet[], int consult[], int n, int m);
+void binary_search(int vet[], int value, int n, int m);
 
 int main() {
-	int vet[100000000000], consult[100000000000];
-	int n, m, i=0, j=0;
+	int *vet, value;
+	int i, j, m, n;
+	
+	vet = malloc(2000000000);
 
 	scanf("%d %d", &n, &m);
 
+    //storage vector
 	for(i=0; i<n; i++) {
 		scanf("%d", &vet[i]);
 	}
 
-	for(j=0; j<m; j++) {
-		scanf("%d", &consult[j]);
+    //consult value
+	for(i=0; i<m; i++) {
+		scanf("%d", &value);
+		
+		//binay search
+		binary_search(vet, value, n, m);
 	}
-
-	binary_search(vet, consult, n, m);
 
 	return 0;
 }
 
-void binary_search(int vet[], int consult[], int n, int m) {
-	int init=0, mid, end=n-1;
-	int i, control = 0;
+void binary_search(int vet[], int value, int n, int m) {
+	int init=0, mid, end=n-1, control=0;
 
-    	for(i=0; i<m; i++) {
-		while(init <= end) {
-			mid = (init + end) / 2;
+	while(init <= end) {
+		mid = (init + end) / 2;
 
-			//smaller
-			if(consult[i] < vet[mid]) {
+		if(value < vet[mid]) {
 			end = mid - 1;
-			}
-
-			//bigger
-			else if(consult[i] > vet[mid]) {
-				init = mid + 1;
-			}
-
-			//found 
-			else {
-				printf("%d\n", mid);
-				control = 1; //found
-				break;
-			}
 		}
-		if(control == 0) {
-		    if(mid == (n-1)){
-			    printf("%d\n", n);
-		    }
-			else {
-			    printf("%d\n", mid);
-		
-			}
+		else if (value > vet[mid]) {
+			init = mid + 1;
 		}
 
-		//reset variables
-		control = 0;
-		init = 0;
-		end = n-1;
+		else {
+		    printf("%d\n", mid);
+	    	control = 1;
+	    	break;
+		}
 	}
-
+	if(control == 0) {
+		if(mid == (n - 1)) {
+			mid += 1;
+			printf("%d\n", mid);
+		}
+		else {
+			printf("%d\n", mid);
+		}
+	}
+	
+	control = 0;
 }

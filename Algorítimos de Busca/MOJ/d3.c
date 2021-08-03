@@ -1,6 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+7 6
+1
+3
+4
+7
+9
+14
+20
+0
+15
+3
+5
+6
+21
+
+*/
+
 int binary_search(int vet[], int value, int n);
 
 int main() {
@@ -30,25 +48,19 @@ int main() {
 }
 
 int binary_search(int vet[], int value, int n) {
-	int init=0, mid, end=n-1, control=0;
+	int init=0, mid, end=n;
 
 	while(init <= end) {
-		mid = (init + end) / 2; 
+		mid = (init + end) / 2;
 
 		if(value < vet[mid]) 
-			end = mid - 1; //pega o subvetor à esquerda
-		
-		else if (value > vet[mid]) 
-			init = mid + 1; //pega o subvetor à direita
-
-		else 
-		    return mid; //encontrou
-	}
-
-	//não encontrou
-	if(value > vet[mid]) {
-		mid += 1;
-		return mid;
+			end = mid - 1;
+		else {
+			if(value > vet[mid])
+				init = mid + 1;
+			else
+				return mid;
+		}
 	}
 	return mid;
 }

@@ -8,9 +8,9 @@ void print_result(int vet[], int tam);
 int main(void) {
 	int tam, value, i, *vet;
 
-	vet = (int *) malloc(100000000);
-
 	scanf("%d", &tam);
+
+	vet = (int *) malloc(tam * sizeof(int));
 
 	for(i=0; i<tam; i++) {
 		scanf("%d", &value);
@@ -21,13 +21,15 @@ int main(void) {
 
 	print_result(vet, tam);
 
+	free(vet);
+
 	return 0;
 }
 
 void merge(int vet[], int init, int mid, int end) {
 	int com_1 = init, com_2 = mid+1, com_temp=0, *temp;
 
-	temp = malloc(100000000);
+	temp = (int *) malloc((end - init + 1) * (sizeof(int)));
 	
 	while(com_1<=mid && com_2<=end) {
 		if(vet[com_1] <= vet[com_2]) {
@@ -47,6 +49,7 @@ void merge(int vet[], int init, int mid, int end) {
 	for(com_temp=init; com_temp<=end; com_temp++) {
 		vet[com_temp] = temp[com_temp-init];
 	}
+	free(temp);
 	
 }
 
