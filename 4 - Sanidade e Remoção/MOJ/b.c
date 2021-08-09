@@ -10,10 +10,13 @@ int main(void) {
 	struct Node node[250000];
 	int i=0;
 
-	while(scanf("%lu %lu %lu", &node[i].address, &node[i].before, &node[i].after) != 3)
+    //getting stack
+	while(scanf("%c %c %c ", &node[i].address, &node[i].before, &node[i].after) != EOF){
 		i++;
+	}
 
-	
+  
+
 
 	return 0;
 }
