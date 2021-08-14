@@ -14,5 +14,10 @@ int main(void) {
 	while(scanf("%lx %lx %lx ", &node[i].address, &node[i].before, &node[i].after) != EOF)
 		i++;
 
+    //printf("%d\n", i);
+    for(int k=0; k<i; k++) {
+        printf("\n%lx, %lx, %lx", node[k].address, node[k].before, node[k].after);
+    }
+
 	return 0;
 }
