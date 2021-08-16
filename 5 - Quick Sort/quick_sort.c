@@ -8,18 +8,21 @@ int less(int current, int pivot);
 void exch(int vet[], int current, int smaller);
 
 int main() {
-  int vet[10], i;
-  //vet = malloc(10);
+  int *vet, i;
+
+  vet = malloc(sizeof(int)*len);
 
   //generate random values to vet
-  for(i=0; i<10; i++)
-    vet[i] = random(time(NULL)) % 100;
+  srand((unsigned)time(NULL));
+
+  for(i=0; i<len; i++)
+    vet[i] = rand() % 100;
 
   //sorting data
-  quick_sort(vet, 0, 10-1);
+  quick_sort(vet, 0, len-1);
 
   //print result
-  for(i=0; i<10; i++)
+  for(i=0; i<len; i++)
     printf("%d\n", vet[i]);
 }
 

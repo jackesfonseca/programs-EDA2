@@ -6,11 +6,11 @@ int partition(int vet[], int left, int right);
 int less(int current, int pivot);
 void exch(int vet[], int current, int smaller);
 void cmpexch(int vet[], int a, int b);
-void rmv_duplicate(int vet[], int tam);
+int rmv_duplicate(int vet[], int tam);
 void print_result(int vet[], int tam);
 
 int main() {
-  int *vet, tam, i;
+  int *vet, tam, i, len;
 
   //get vector tam
   scanf("%d", &tam);
@@ -25,10 +25,12 @@ int main() {
   quick_sort(vet, 0, tam-1);
 
   //removing duplicated numbers
-  rmv_duplicate(vet, tam);
+  len = rmv_duplicate(vet, tam);
+
+  
 
   //print results
-  print_result(vet, tam);
+  print_result(vet, len);
 
   return 0;
 }
@@ -92,7 +94,7 @@ void cmpexch(int vet[], int a, int b) {
 }
 
 //removing duplicated numbers
-void rmv_duplicate(int vet[], int tam) {
+int rmv_duplicate(int vet[], int tam) {
   int i, j, k;
 
   for(i=0; i<tam; i++) {
@@ -106,6 +108,8 @@ void rmv_duplicate(int vet[], int tam) {
         j++;
     }
   }
+
+  return j;
 }
 
 //printing result
@@ -113,11 +117,11 @@ void print_result(int vet[], int tam) {
   int i;
 
   for(i=0; i<tam; i++) {
-    printf("%d", vet[i]);
+    printf("%d\n", vet[i]);
     if(i != tam-1) {
-      printf(" ");
+      //printf(" ");
     }
   }
 
-  printf("\n");
+  //printf("\n");
 }
