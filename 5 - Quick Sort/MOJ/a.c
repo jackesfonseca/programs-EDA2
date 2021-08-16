@@ -27,7 +27,7 @@ int main() {
   //removing duplicated numbers
   len = rmv_duplicate(vet, tam);
 
-  
+
 
   //print results
   print_result(vet, len);
