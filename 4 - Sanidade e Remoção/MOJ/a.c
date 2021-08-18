@@ -16,7 +16,7 @@ int main(void) {
 
     for(int k=1; k<i; i++) {
     	if(node[j].next == node[k].address) {
-    		//found
+    		//found it
 
     	}
     }
