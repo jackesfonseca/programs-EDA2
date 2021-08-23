@@ -99,21 +99,15 @@ void cmpexch(Character character[], int a, int b) {
 
 //removing duplicated numbers
 int rmv_duplicate(Character character[], int tam) {
-  int i, j, k;
+  int new_i = 0;
 
-  for(i=0; i<tam; i++) {
-    for(j=i+1; j<tam; ) {
-      if(character[i].cod == character[j].cod) {
-        for(k=j; k<tam; k++)
-          character[k] = character[k + 1];
-        tam--;
-      }
-      else
-        j++;
-    }
+  for(int i=1; i<tam; i++)
+  {
+    if(character[i].cod != character[new_i].cod)
+      character[++new_i] = character[i];
   }
 
-  return j;
+  return new_i + 1;
 }
 
 void print_result(Character character[], int tam)
