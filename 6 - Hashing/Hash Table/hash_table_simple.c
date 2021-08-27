@@ -21,7 +21,7 @@ int main(void)
 	scanf("%d", &tam);
 
 	for(i=0; i<tam; i++)
-		hash_table = 0;
+		hash_table[i] = 0;
 
 	//finding the hash number values
 	for(i=0; i<tam; i++)
