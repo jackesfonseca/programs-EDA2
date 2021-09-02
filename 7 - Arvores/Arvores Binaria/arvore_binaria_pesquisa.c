@@ -60,6 +60,19 @@ int count_nodes(PONT root)
 	return (count_nodes(root->left) + 1 + count_nodes(root->right));
 }
 
+/* root -> left -> right*/
+void print_tree(PONT root)
+{
+	if(root != NULL)
+	{
+		printf("%d", root->key);
+		printf("(");
+		print_tree(root->left);
+		print_tree(root->right);
+		printf(")");
+	}
+}
+
 int main(void)
 {
 	PONT root = init();
