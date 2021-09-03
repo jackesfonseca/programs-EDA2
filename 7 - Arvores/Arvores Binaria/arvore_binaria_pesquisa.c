@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stlib.h>
+#include <stdlib.h>
 #define true 1;
 #define false 0;
 
@@ -21,7 +21,7 @@ PONT init()
 
 PONT create_node(TYPEKEY key)
 {
-	new_node = (PONT)malloc(sizeof(PONT));
+	PONT new_node = (PONT)malloc(sizeof(PONT));
 	new_node->key = key;
 	new_node->left = NULL;
 	new_node->right = NULL;
@@ -35,9 +35,9 @@ PONT insert(PONT root, PONT node)
 	if(root == NULL)
 		return (node);
 	if(node->key < root->key)
-		node->left = insert(root->left, node);
+		root->left = insert(root->left, node);
 	else
-		node->right = insert(root->right, node);
+		root->right = insert(root->right, node);
 	return (root);
 }
 
@@ -60,6 +60,76 @@ int count_nodes(PONT root)
 	return (count_nodes(root->left) + 1 + count_nodes(root->right));
 }
 
+/* binary search without recursion */
+PONT binary_search(PONT root, TYPEKEY key, PONT *father)
+{
+	PONT current = root;
+	*father = NULL;
+
+	while(current)
+	{
+		if(current->key == key)
+			return current;
+
+		*father = current;
+
+		if(key < current->key)
+			current = current->left;
+		else
+			current = current->right;
+	}
+	return NULL;
+}
+
+PONT remove_node(PONT root, TYPEKEY key)
+{
+	PONT father, node, p, q;
+
+	node = binary_search(root, key, &father);
+
+	if(node == NULL)
+		return root;
+
+	if (!node->left || !node->right)
+	{
+		if(!node->left)
+			q = node->right;
+		else
+			q = node->left;
+	}
+	else
+	{
+		p = node;
+		q = node->left;
+		while(q->right)
+		{
+			p = q;
+			q = q->right;
+		}
+
+		if(p != node)
+		{
+			p->right = q->left;
+			q->left = node->left;
+		}
+		q->right = node->right;
+	}
+
+	if(!father)
+	{
+		free(node);
+		return q;
+	}
+
+	if(key < father->key)
+		father->left = q;
+	else
+		father->right = q;
+
+	free(node);
+	return root;
+}
+
 /* root -> left -> right*/
 void print_tree(PONT root)
 {
@@ -75,6 +145,8 @@ void print_tree(PONT root)
 
 int main(void)
 {
+	TYPEKEY s_index = 2;
+
 	PONT root = init();
 	PONT node; 
 	
@@ -82,20 +154,20 @@ int main(void)
 	root = insert(root, node);
 	node = create_node(8);
 	root = insert(root, node);
-	node = create_node(15);
-	root = insert(root, node);
-	node = create_node(2);
-	root = insert(root, node);
-	node = create_node(12);
-	root = insert(root, node);
 	node = create_node(20);
 	root = insert(root, node);
-	node = create_node(30);
+	node = create_node(5);
+	root = insert(root, node);
+	node = create_node(40);
+	root = insert(root, node);
+	node = create_node(16);
 	root = insert(root, node);
 
-	PONT s_node = search(root, 2);
+	PONT s_node = search(root, s_index);
 
-	printf("%d\n", count_nodes(root));
+	printf("Nodes: %d\n", count_nodes(root));
+	print_tree(root);
+	printf("\n");
 
 	return 0;
 }
