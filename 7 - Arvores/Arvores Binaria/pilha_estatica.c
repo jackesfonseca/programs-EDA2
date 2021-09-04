@@ -25,7 +25,7 @@ void init_stack(Stack *stack)
 }
 
 /* elements quantity */
-int tam_stack(Stack *stack)
+int len_stack(Stack *stack)
 {
 	return stack->top + 1;
 }
