@@ -10,7 +10,7 @@ typedef struct
 
 typedef struct aux
 {
-	Register register;
+	Register reg;
 	struct aux *next;
 }Item;
 
@@ -21,8 +21,6 @@ typedef struct
 	PONT top; /* top is a variable with type Item * */
 	/* could be created a variable to count the numbers of elements */
 }Stack;
-
-
 
 void init_stack(Stack *stack)
 {
@@ -37,7 +35,7 @@ int len_stack(Stack *stack)
 	while(end != NULL)
 	{
 		len++;
-		end = end->top;
+		end = end->next;
 	}
 
 	return len;
@@ -50,37 +48,39 @@ int empty_stack(Stack *stack)
 	return 0;
 }
 
-boid print_stack(Stack *stack)
+void print_stack(Stack *stack)
 {
 	PONT end = stack->top;
 
 	while(end != NULL)
 	{
-		printf("%d", end->register->key);
-		if(end->top != NULL)
+		printf("%d", end->reg.key);
+		if(end->next != NULL)
 			printf(" ");
+
+		end = end->next;
 	}
 
 	printf("\n");
 }
 
 /* insert item */
-int push(Stack *stack, Register register)
+int push(Stack *stack, Register reg)
 {
 	PONT new = (PONT) malloc(sizeof(Item));
-	new->register = register;
+	new->reg = reg;
 	new->next = stack->top;
 	stack->top = new;
 	return 1; 
 }
 
 /* delete item */
-int pop(Stack *stack, Register *register)
+int pop(Stack *stack, Register *reg)
 {
 	if(stack->top == NULL)
 		return 0;
 
-	*register = stack->top->register;
+	*reg = stack->top->reg;
 	PONT delete = stack->top;
 	stack->top = stack->top->next;
 	free(delete);
@@ -92,7 +92,7 @@ void restart_stack(Stack *stack)
 	PONT delete;
 	PONT position = stack->top;
 
-	/* free memoty of all valid elements */
+	/* free memory of all valid elements */
 	while(position != NULL)
 	{
 		delete = position;
@@ -105,7 +105,19 @@ void restart_stack(Stack *stack)
 
 int main(void)
 {
+	Stack stack;
+	Register reg, reg_del;
 
+	init_stack(&stack);
+
+	while(scanf("%d", &reg.key) != EOF)
+		push(&stack, reg);
+
+	print_stack(&stack);
+
+	pop(&stack, &reg_del);
+
+	print_stack(&stack);
 
 	return 0;
 }
