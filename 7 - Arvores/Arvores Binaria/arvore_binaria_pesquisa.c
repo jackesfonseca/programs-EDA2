@@ -130,17 +130,42 @@ PONT remove_node(PONT root, TYPEKEY key)
 	return root;
 }
 
-/* root -> left -> right*/
-void print_tree(PONT root)
+/* Pre order: root -> left -> right*/
+void pre_order(PONT root)
 {
 	if(root != NULL)
 	{
 		printf("%d", root->key);
-		printf("(");
-		print_tree(root->left);
-		print_tree(root->right);
-		printf(")");
+		printf(" ");
+		pre_order(root->left);
+		pre_order(root->right);
 	}
+	
+}
+
+/* In order: left -> root -> right */
+void in_order(PONT root)
+{
+	if(root != NULL)
+	{
+		in_order(root->left);
+		printf("%d", root->key);
+		printf(" ");
+		in_order(root->right);
+	}
+}
+
+/* Post order: left -> right -> root */
+void post_order(PONT root)
+{
+	if(root != NULL)
+	{
+		post_order(root->left);
+		post_order(root->right);
+		printf("%d", root->key);
+		printf(" ");
+	}
+	
 }
 
 int main(void)
@@ -149,24 +174,18 @@ int main(void)
 
 	PONT root = init();
 	PONT node; 
+	int item;
 	
-	node = create_node(10);
-	root = insert(root, node);
-	node = create_node(8);
-	root = insert(root, node);
-	node = create_node(20);
-	root = insert(root, node);
-	node = create_node(5);
-	root = insert(root, node);
-	node = create_node(40);
-	root = insert(root, node);
-	node = create_node(16);
-	root = insert(root, node);
+	while(scanf("%d", &item) != EOF)
+	{
+		node = create_node(item);
+		root = insert(root, node);
+	}
 
 	PONT s_node = search(root, s_index);
 
 	printf("Nodes: %d\n", count_nodes(root));
-	print_tree(root);
+	in_order(root);
 	printf("\n");
 
 	return 0;
