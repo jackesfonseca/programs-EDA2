@@ -1,50 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Count
+typedef struct aux
 {
-	int color;
+	int note;
 	int frequency;
 } Count;
 
-void hash_init(Count hash_table[], int m);
-void print_result(Count hash_table[], int m);
+void hash_init(Count *hash_table, int m);
 void merge_sort(Count hash_table[], int init, int end);
 void merge(Count hash_table[], int init, int mid, int end);
 
-int main()
+int main(void)
 {
 	Count *hash_table;
-	int n=0, m=1000000, i=0, tam, cod;
+	int i, note, m=1000, amount;
 
-    scanf("%d", &tam);
-    
-    /* probably O(n²) */
-	while(tam != 0)
+	hash_table = (Count *)malloc(sizeof(Count) * m);
+	hash_init(hash_table, m);
+
+	scanf("%d", &amount);
+
+	for(i=0; i<amount; i++)
 	{
-		//starting hash table
-		hash_table = (Count *)malloc(sizeof(Count) * m);
-		hash_init(hash_table, m);
-
-		for(i=0; i<tam; i++)
-		{
-			scanf("%d", &cod);
-			hash_table[cod].color = cod;
-			hash_table[cod].frequency++;
-		}
-
-		//sorting hash table
-		merge_sort(hash_table, 0, m-1);
-
-		//printing result
-		print_result(hash_table, m);
-
-		//restart hash table and auxiliar variables
-		hash_init(hash_table, m);
-		i=0;
-		
-		scanf("%d", &tam);
+		scanf("%d", &note);
+		hash_table[note].note = note;
+		hash_table[note].frequency++;
 	}
+
+	/* sort data */
+	merge_sort(hash_table, 0, m-1);
+
+	printf("%d\n", hash_table[m-1].note);
 
 	return 0;
 }
@@ -55,9 +42,9 @@ void hash_init(Count *hash_table, int m)
 
 	for(i=0; i<m; i++)
 	{
-		hash_table[i].color = 0;
+		hash_table[i].note = 0;
 		hash_table[i].frequency = 0;
-    }
+	}
 }
 
 //sort algorithm
@@ -98,11 +85,4 @@ void merge(Count hash_table[], int init, int mid, int end) {
 	}
 	free(temp);
 	
-}
-
-//print result
-void print_result(Count hash_table[], int m)
-{
-
-	printf("%d\n", hash_table[m-1].color);
 }
