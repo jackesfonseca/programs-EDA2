@@ -108,7 +108,7 @@ int empty_stack(Stack *stack)
 
 
 /* Pre order: root -> left -> right*/
-void pre_order2(PONT_TREE root)
+void pre_order(PONT_TREE root)
 {
 	PONT_TREE aux = root;
 	Register reg;
@@ -117,58 +117,31 @@ void pre_order2(PONT_TREE root)
 	
 	init_stack(&stack);
 
-	do
-	{
-		if(aux != NULL)
-		{
-			printf("%d ", aux->key);
-			if(aux->right != NULL)
-			{
-				reg.node = aux->right;
-				push(&stack, reg);
-
-			}
-			aux = aux->left;
-		}
-
-		else if(empty_stack(&stack))
-			end = 0;
-		else
-			pop(&stack);
-	} while(end != 0);
-
-	printf("\n");
-}
-
-/* Pre order: root -> left -> right*/
-void pre_order(PONT_TREE root)
-{
-	PONT_TREE aux = root;
-	Register reg;
-	Stack stack;
-	
-	init_stack(&stack);
-
-	reg.node = aux->right;
+	/* 1st step: push root */
+	reg.node = aux;
 	push(&stack, reg);
 
 	while(!empty_stack(&stack))
 	{
-		if(aux != NULL)
-		{
-			printf("%d ", aux->key);
+		/* current recieve stack's top */
+		aux = pop(&stack);
 
-			if(aux->right != NULL)
-			{
-				reg.node = aux->right;
-				push(&stack, reg);
-			}
-			aux = aux->left;
-		}
-		else
+		/* print current */
+		printf("%d ", aux->key);
+
+		/* pop from stack */
+		//pop(&stack);
+
+		if(aux->right != NULL) 
 		{
-			aux = pop(&stack);
-		}		
+			reg.node = aux->right;
+			push(&stack, reg);
+		}
+		if(aux->left != NULL)
+		{
+			reg.node = aux->left;
+			push(&stack, reg);
+		}
 	}
 
 	printf("\n");
