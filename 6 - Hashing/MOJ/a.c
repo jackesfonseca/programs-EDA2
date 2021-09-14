@@ -8,43 +8,43 @@ typedef struct Count
 } Count;
 
 void hash_init(Count hash_table[], int m);
+void print_result(Count hash_table[], int m);
+void merge_sort(Count hash_table[], int init, int end);
+void merge(Count hash_table[], int init, int mid, int end);
 
 int main()
 {
 	Count *hash_table;
-	int n=0, m=1000001, i=0, tam, cod;
-	int bigger_color=0, bigger_frequency=0;
+	int n=0, m=1000000, i=0, tam, cod;
+	int bigger_frequency=0, bigger_color=0; 
 
-    scanf("%d", &tam);
-    
 	//starting hash table
 	hash_table = (Count *)malloc(sizeof(Count) * m);
 	hash_init(hash_table, m);
 
+    scanf("%d", &tam);
+    
     /* probably O(n²) */
 	while(tam != 0)
 	{
 		for(i=0; i<tam; i++)
 		{
 			scanf("%d", &cod);
-			
+			hash_table[cod].color = cod;
 			hash_table[cod].frequency++;
-			//hash_table[cod].color = cod;
 
 			if(hash_table[cod].frequency > bigger_frequency)
 			{
-				bigger_frequency = hash_table[cod].frequency;
+				bikesgger_frequency = hash_table[cod].frequency;
 				bigger_color = hash_table[cod].color;
 			}
 		}
 
-		/* print result */
-		printf("%d\n", bigger_color);		
+		//printing result
+		printf("%d\n", bigger_color);
 
 		//restart hash table and auxiliar variables
 		hash_init(hash_table, m);
-		bigger_color = 0;
-		bigger_frequency = 0;
 		i=0;
 		
 		scanf("%d", &tam);
