@@ -18,8 +18,14 @@ int delMax_pq(struct pq_st *PQ);
 
 int main(void)
 {
+	struct pq_st *PQ;
+	int maxN = 10, i;
 
+	init_pq(PQ, maxN);
+	insert_pq(PQ, 10);
 
+	for(i=0; i<maxN; i++)
+		printf("%d\n", PQ[i].pq);
 
 	return 0;
 }
