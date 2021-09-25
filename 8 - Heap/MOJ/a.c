@@ -8,6 +8,7 @@ typedef struct Character
 }Character;
 
 void hash_init(Character *hash_table, int m);
+void print_result(Character *hash_table, int index, int m);
 
 int main(void)
 {
@@ -26,11 +27,10 @@ int main(void)
 		i++;
 	}
 
-	while(i>=0)
-	{
-		printf("%d %c\n", hash_table[c].cod, hash_table[c].c);
-		i--;
-	}
+	while(hash_table[i].cod == 0)
+		i++;
+
+	print_result(hash_table, i, m);
 
 
 	return 0;
@@ -45,4 +45,14 @@ void hash_init(Character *hash_table, int m)
 		//hash_table[i].c = " ";
 		hash_table[i].cod = 0;
 	}
+}
+
+void print_result(Character *hash_table, int index, int m)
+{
+	int i;
+
+	for(i=index; i<m; i++)
+		printf("%d %c\n", hash_table[i].cod, hash_table[i].c);
+
+	//printf("\n");
 }
