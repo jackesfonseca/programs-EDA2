@@ -11,19 +11,18 @@ void init_pq(struct pq_st *PQ, int maxN);
 int empty_pq(struct pq_st *PQ);
 void fix_down(struct pq_st *PQ, int k, int pq_len);
 void fix_up(struct pq_st *PQ, int k);
-int less(int ancestor_node, int son_node);
+int less(struct pq_st *PQ, int ancestor_node, int son_node);
 void exch(struct pq_st *PQ, int son_node, int ancestor_node);
 void insert_pq(struct pq_st *PQ, int item);
 int delMax_pq(struct pq_st *PQ);
 
 int main(void)
 {
-	struct pq_st *PQ;
+	struct pq_st PQ;
 	int maxN = 10, i;
 
-	init_pq(PQ, maxN);
-	printf("%d", PQ->n);
-	insert_pq(PQ, 10);
+	init_pq(&PQ, maxN);
+	insert_pq(&PQ, 10);
 
 	/*for(i=0; i<maxN; i++)
 		printf("%d\n", PQ[i].pq);
@@ -44,7 +43,7 @@ int empty_pq(struct pq_st *PQ)
 
 void fix_up(struct pq_st *PQ, int k)
 {
-	while(k>1 && less(PQ[k/2].pq, PQ[k].pq))
+	while(k>1 && less(PQ, (k/2), k))
 	{
 		exch(PQ, k, k/2);
 		k = k/2;
@@ -58,18 +57,18 @@ void fix_down(struct pq_st *PQ, int k, int pq_len)
 	while(2*k <= pq_len)
 	{
 		j = 2*k;
-		if(j<pq_len && less(PQ[j].pq, PQ[j+1].pq))
+		if(j<pq_len && less(PQ, j, j+1))
 			j++;
-		if(!less(PQ[k].pq, PQ[j].pq))
+		if(!less(PQ, k, j))
 			break;
 		exch(PQ, k, j);
 		k = j;
 	}
 }
 
-int less(int ancestor_node, int son_node)
+int less(struct pq_st *PQ, int ancestor_node, int son_node)
 {
-	return ancestor_node < son_node;
+	return PQ[ancestor_node].pq < PQ[son_node].pq;
 }
 
 void exch(struct pq_st *PQ, int son_node, int ancestor_node)
