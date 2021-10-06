@@ -14,7 +14,7 @@ void fix_up(struct pq_st *PQ, int k);
 int less(struct pq_st *PQ, int ancestor_node, int son_node);
 void exch(struct pq_st *PQ, int son_node, int ancestor_node);
 void insert_pq(struct pq_st *PQ, int item);
-int delMax_pq(struct pq_st *PQ);
+int *delMax_pq(struct pq_st *PQ);
 
 int main(void)
 {
@@ -82,11 +82,11 @@ void exch(struct pq_st *PQ, int son_node, int ancestor_node)
 
 void insert_pq(struct pq_st *PQ, int item)
 {
-	PQ[++PQ->n].pq = item;
-	fix_up(PQ, PQ->n); /* fix_up(PQ->, PQ->n); */
+	(int)PQ[++PQ->n].pq = item;
+	fix_up(PQ, PQ->n);
 }
 
-int delMax_pq(struct pq_st *PQ)
+int *delMax_pq(struct pq_st *PQ)
 {
 	exch(PQ, 1, PQ->n);
 	fix_down(PQ, 1, (PQ->n-1));
