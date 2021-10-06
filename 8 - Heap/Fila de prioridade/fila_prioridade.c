@@ -1,94 +1,52 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include "ordenacaomacros.h"
+#include "fila_prioridade.h"
 
-struct pq_st
+static Item *pq;
+static int N;
+
+void PQinit(int maxN)
 {
-	int *pq; /* priority queue item */
-	int n; /* amount of elements */
-};
-
-void init_pq(struct pq_st *PQ, int maxN);
-int empty_pq(struct pq_st *PQ);
-void fix_down(struct pq_st *PQ, int k, int pq_len);
-void fix_up(struct pq_st *PQ, int k);
-int less(struct pq_st *PQ, int ancestor_node, int son_node);
-void exch(struct pq_st *PQ, int son_node, int ancestor_node);
-void insert_pq(struct pq_st *PQ, int item);
-int delMax_pq(struct pq_st *PQ);
-
-int main(void)
-{
-	struct pq_st PQ;
-	int maxN = 10, i;
-
-	init_pq(&PQ, maxN);
-	insert_pq(&PQ, 10);
-
-	/*for(i=0; i<maxN; i++)
-		printf("%d\n", PQ[i].pq);
-	*/
-	return 0;
+  pq=malloc(sizeof(Item)*maxN);
+  N=0;
 }
 
-void init_pq(struct pq_st *PQ, int maxN)
+int PQempty()
 {
-	PQ->pq = malloc(sizeof(int) * (maxN + 1));
-	PQ->n = 0;
+  return N==0;
 }
 
-int empty_pq(struct pq_st *PQ)
+void PQinsert(Item v)
 {
-	return PQ->n == 0;
+  pq[++N]=v;
+  fixUp(pq,N);
 }
 
-void fix_up(struct pq_st *PQ, int k)
+Item PQdelmax()
 {
-	while(k>1 && less(PQ, (k/2), k))
-	{
-		exch(PQ, k, k/2);
-		k = k/2;
-	}
+  exch(pq[1],pq[N]);
+  fixDown(pq,1,N-1);
+  return pq[N--];
 }
 
-void fix_down(struct pq_st *PQ, int k, int pq_len)
+void fixUp(Item *pq, int k)
 {
-	int j;
-
-	while(2*k <= pq_len)
-	{
-		j = 2*k;
-		if(j<pq_len && less(PQ, j, j+1))
-			j++;
-		if(!less(PQ, k, j))
-			break;
-		exch(PQ, k, j);
-		k = j;
-	}
+  while(k>1 && less(pq[k/2],pq[k]))
+  {
+    exch(pq[k],pq[k/2]);
+    k=k/2;
+  }
 }
 
-int less(struct pq_st *PQ, int ancestor_node, int son_node)
+void fixDown(Item *pq, int k, int N)
 {
-	return PQ[ancestor_node].pq < PQ[son_node].pq;
-}
-
-void exch(struct pq_st *PQ, int son_node, int ancestor_node)
-{
-	struct pq_st temp;
-
-	temp = PQ[son_node];
-	PQ[son_node] = PQ[ancestor_node];
-	PQ[ancestor_node] = temp;
-}
-
-void insert_pq(struct pq_st *PQ, int item)
-{
-	*(PQ[++PQ->n].pq) = item;
-	fix_up(PQ, PQ->n);
-}
-
-int delMax_pq(struct pq_st *PQ)
-{
-	exch(PQ, 1, PQ->n);
-	fix_down(PQ, 1, (PQ->n-1));
-	return *(PQ[PQ->n].pq);
+  int j;
+  while(2*k <= N)
+  {
+    j=2*k;
+    if(j<N && less(pq[j],pq[j+1])) j++;
+    if(!less(pq[k],pq[j])) break;
+    exch(pq[k],pq[j]);
+    k=j;
+  }
 }
