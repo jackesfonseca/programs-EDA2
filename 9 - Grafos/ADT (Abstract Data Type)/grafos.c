@@ -68,7 +68,7 @@ void insert_edge(Graph graph, Edge edge)
 void remove_edge(Graph graph, Edge e)
 {
 	int v = edge.v, w = edge.w;
-	if(graph->ajd[v][w] == 1)
+	if(garph->ajd[v][w] == 1)
 		graph->e--;
 }
 
