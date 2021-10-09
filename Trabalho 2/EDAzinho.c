@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/time.h>
 
 typedef struct hash_table
@@ -7,6 +8,11 @@ typedef struct hash_table
 	int row;
 	int column;
 } Hash_table;
+
+/*
+	sondagem L' C' P
+	dominacao P
+*/
 
 void hash_init(Count hash_table[], int m);
  
@@ -18,11 +24,13 @@ int main(void)
 	int m = 262139;
 	struct timeval start, end; 
 	double program_time_t, program_time_s, program_time_m;
+	char command[256];
 
-	gettimeofday(&start, NULL);
-
+	hash_table = (Hash_table *)malloc(sizeof(Hash_table) * m);
 	hash_init(hash_table, m);
 	scanf("%d %d %d %d", &row, &column, &p_i, &t_loop);
+
+	gettimeofday(&start, NULL);
 
 	while(t_loop >= 0)
 	{
