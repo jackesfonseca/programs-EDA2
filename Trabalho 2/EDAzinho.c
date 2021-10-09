@@ -16,7 +16,7 @@ int main(void)
 	int row, column, p_i, t_loop /* start game data */
 	Hash_table *hash_table;
 	int m = 262139;
-	struct timeval start, end;
+	struct timeval start, end; 
 	double program_time_t, program_time_s, program_time_m;
 
 	gettimeofday(&start, NULL);
