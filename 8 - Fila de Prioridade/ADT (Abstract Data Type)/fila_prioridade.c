@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "ordenacaomacros.h"
+#include "macros.h"
 #include "fila_prioridade.h"
 
 static Item *pq;
