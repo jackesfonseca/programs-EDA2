@@ -125,6 +125,7 @@ int insere_FilaPrio(FilaPrio *fp, int value, int prio)
 	return 1;
 }
 
+/* O(1) */
 int remove_FilaPrio(FilaPrio *fp)
 {
 	if(fp == NULL)
