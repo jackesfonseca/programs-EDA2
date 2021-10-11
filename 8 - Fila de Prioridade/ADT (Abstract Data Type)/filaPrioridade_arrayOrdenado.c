@@ -138,6 +138,7 @@ int remove_FilaPrio(FilaPrio *fp)
 	return 1;
 }
 
+/* O(1) */
 int consulta_FilaPrio(FilaPrio *fp)
 {
 	if(fp == NULL)

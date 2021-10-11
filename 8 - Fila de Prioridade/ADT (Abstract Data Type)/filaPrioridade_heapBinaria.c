@@ -41,11 +41,23 @@ int main(void)
 	insere = insere_FilaPrio(fp, 3, 3);
 	insere = insere_FilaPrio(fp, 4, 4);
 	insere = insere_FilaPrio(fp, 5, 5);
+	/* consult */
+	consulta = consulta_FilaPrio(fp);
+	printf("Consulta: %d\n", consulta);
 
 	/* remove */
 	remove = remove_FilaPrio(fp);
+	/* consult */
+	consulta = consulta_FilaPrio(fp);
+	printf("Consulta: %d\n", consulta);
 	remove = remove_FilaPrio(fp);
+	/* consult */
+	consulta = consulta_FilaPrio(fp);
+	printf("Consulta: %d\n", consulta);
 	remove = remove_FilaPrio(fp);
+	/* consult */
+	consulta = consulta_FilaPrio(fp);
+	printf("Consulta: %d\n", consulta);
 
 	return 0;
 }
@@ -96,7 +108,7 @@ int insere_FilaPrio(FilaPrio *fp, int value, int prio)
 		return 0;
 
 	fp->dados[fp->qtd].value = value;
-	fp->dados[fo->qtd].prio = prio;
+	fp->dados[fp->qtd].prio = prio;
 	promoverElemento(fp, fp->qtd);
 	fp->qtd++;
 	return 1;
@@ -125,7 +137,7 @@ int remove_FilaPrio(FilaPrio *fp)
 	if(fp == NULL)
 		return 0;
 
-	if(estaVazia_FilaPrio())
+	if(estaVazia_FilaPrio(fp))
 		return 0;
 
 	fp->qtd--;
@@ -137,12 +149,12 @@ int remove_FilaPrio(FilaPrio *fp)
 void rebaixarElemento(FilaPrio *fp, int pai)
 {
 	struct item temp;
-	int filho 2*pai+1;
+	int filho = 2*pai+1;
 
 	while(filho < fp->qtd)
 	{
 		/* Pai tem dois  filhos? Quem é o maio? */
-		if(filho < fp>qtd-1)
+		if(filho < fp->qtd-1)
 		{
 			if(fp->dados[filho].prio < fp->dados[filho+1].prio)
 				filho++;
@@ -164,5 +176,11 @@ void rebaixarElemento(FilaPrio *fp, int pai)
 
 int consulta_FilaPrio(FilaPrio *fp)
 {
+	if(fp == NULL)
+		return 0;
 
+	if(estaVazia_FilaPrio(fp))
+		return 0;
+
+	return fp->dados[fp->qtd-1].value;
 }
