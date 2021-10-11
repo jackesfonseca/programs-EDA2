@@ -1,126 +1,73 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int hash(int value, int m);
-int hash_u(int tam);
-void hash_init(int *hash_table, int max);
-int hash_count();
-int key(int index);
-int less(int index_a, int index_b);
-int null(int index);
-void hash_insert(int value);
+struct itens
+{
+	int value;
+};
 
-/**
- * m = hash table length
- * n = the amount of elements
- * 16161
- */
-static int *hash_table;
-static int n=0, m=262139; //prime number to generate hash table for 100000 elements
+struct hash
+{
+	int qtd, TABLE_SIZE;
+	struct itens **item; /* um ponteiro cria o vetor o outro armazena o endereço */
+};
+
+typedef struct hash Hash;
+
+Hash *criaHash(int TABLE_SIZE);
+void liberaHash(Hash *hash_table);
+int valorString(char *str);
+int insereHash_semColisao(Hash *hash_table, struct itens *item);
+int buscaHash_semColisao(Hash *hash_table, struct itens *item);
+int insereHash_enderAberto(Hash *hash_table, struct itens *item);
+int buscaHash_enderAberto(Hash *hash_table, struct itens *item);
 
 int main(void)
 {
-	hash_init(hash_table, m);
+	Hash *hash_table;
 
-	//get amount of elements
-	
+	hash_table = criaHash(1427);
 
-	//finding the hash number values
-	
+	liberaHash(hash_table);
 
-	//consult if value is on hash table
-	
 	return 0;
 }
 
-//hash function
-int hash(int value, int m)
+Hash *criaHash(int TABLE_SIZE)
 {
-	//cast to unsigned is to avoid negativy numbers
-	/**
-	 * 618033 is good to random numbers
-	 */
-	return ((262139 * (unsigned) value) % m);
-}
+	Hash *hash_table = (Hash *)malloc(sizeof(Hash));
 
-//universal hash function
-int hash_u(int m)
-{
-	int i, a = 31415, b = 27183;
-
-	for(i=0; *hash_table != '\n'; i++)
+	if(hash_table != NULL)
 	{
-		a = a*b % (m-1);
-		i = (a*i + *hash_table) % m;
+		int i;
+		hash_table->TABLE_SIZE = TABLE_SIZE;
+		hash_table->item = (struct itens **)malloc(TABLE_SIZE * sizeof(struct itens *));
+
+		if(hash_table->item == NULL)
+		{
+			free(hash_table);
+			return NULL;
+		}
+
+		hash_table->qtd = 0;
+		for(i=0; i<hash_table->TABLE_SIZE; i++)
+			hash_table->item[i] = NULL;
 	}
 
-	return i;
+	return hash_table;
 }
 
-//return hash key element
-int key(int index)
+void liberaHash(Hash *hash_table)
 {
-	return hash_table[index];
-}
-
-//compare two keys
-int less(int index_a, int index_b)
-{
-	return key(index_a) < key(index_b);
-}
-
-//verify if is a null item
-int null(int index)
-{
-	int null_item = 0;
-
-	return key(index) == null_item;
-}
-
-//initializate the hash table with null
-void hash_init(int *hash_table, int max)
-{
-	int i;
-
-	hash_table = malloc(sizeof(int) * m);
-
-	for(i=0; i<m; i++)
-		hash_table[i] = 0;
-}
-
-//get amount of elements
-int hash_count()
-{
-	return n;
-}
-
-//insert item to hash table avoiding colisions
-void hash_insert(int value)
-{
-	int index = hash(value, m);
-
-	//linear probing
-	while(!null(index))
-		index = (index + 1) % m;
-
-	hash_table[index] = value;
-	n++;
-}
-
-//search for element in hash table
-int hash_search(int value)
-{
-	int index = hash(value, m);
-
-	while(!null(index))
+	if(hash_table != NULL)
 	{
-		if(value == key(index))
-			return hash_table[index];
-
-		else  
-			index = (index + 1) % m;
+		int i;
+		for(i=0; i<hash_table->TABLE_SIZE; i++)
+		{
+			if(hash_table->item[i] != NULL)
+				free(hash_table->item[i]);
+		}
+		free(hash_table->item);
+		free(hash_table);
 	}
-
-	//null item
-	return 0;
 }
