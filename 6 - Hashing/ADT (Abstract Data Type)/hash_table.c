@@ -21,6 +21,10 @@ int insereHash_semColisao(Hash *hash_table, struct itens *item);
 int buscaHash_semColisao(Hash *hash_table, struct itens *item);
 int insereHash_enderAberto(Hash *hash_table, struct itens *item);
 int buscaHash_enderAberto(Hash *hash_table, struct itens *item);
+/* funções para calcular valor hash de um item */
+int chaveDivisao(int chave, int TABLE_SIZE);
+int calculaMultiplicacao(int chave, int TABLE_SIZE);
+int calculaDobra(int chave, int TABLE_SIZE);
 
 int main(void)
 {
@@ -70,4 +74,38 @@ void liberaHash(Hash *hash_table)
 		free(hash_table->item);
 		free(hash_table);
 	}
+}
+
+/* Método da divisão ou Congruência Linear */
+int chaveDivisao(int chave, int TABLE_SIZE)
+{
+	/* 
+	& - Operação bit a bit
+	0x7FFFFFFF - Maior inteiro 32 bits (evitar overflow)
+	% TABLE_SIZE - Garante que o código hash estará entre 0 e o valor de HASH_TABLE
+	*/
+	return (chave & 0x7FFFFFFF) % TABLE_SIZE; 
+}
+
+/* Método da multiplicação ou congruência linear multiplicativo */
+int calculaMultiplicacao(int chave, int TABLE_SIZE)
+{
+	float A = 0.6180339887 /* Constante 0 < A < 1 */
+	float val = chave * A;
+	val = val - (int)val;
+	return (int)(TABLE_SIZE * val);
+}
+
+/* Método da Dobra */
+int calculaDobra(int chave, int TABLE_SIZE)
+{
+	/*
+	>> - Desloca a b bits à direita
+	^ - Ou exclusivo
+	*/
+	int num_bits = 10;
+	int parte1 = chave >> num_bits;
+	int parte2 = chave & (TABLE_SIZE-1);
+
+	return parte1 ^ parte2;
 }
