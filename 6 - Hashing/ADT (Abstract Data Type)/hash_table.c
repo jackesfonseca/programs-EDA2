@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 struct itens
 {
-	int value;
+	int valor;
 };
 
 struct hash
@@ -17,10 +18,10 @@ typedef struct hash Hash;
 Hash *criaHash(int TABLE_SIZE);
 void liberaHash(Hash *hash_table);
 int valorString(char *str);
-int insereHash_semColisao(Hash *hash_table, struct itens *item);
-int buscaHash_semColisao(Hash *hash_table, struct itens *item);
-int insereHash_enderAberto(Hash *hash_table, struct itens *item);
-int buscaHash_enderAberto(Hash *hash_table, struct itens *item);
+int insereHash_semColisao(Hash *hash_table, struct itens item);
+int buscaHash_semColisao(Hash *hash_table, struct itens item);
+int insereHash_enderAberto(Hash *hash_table, struct itens item);
+int buscaHash_enderAberto(Hash *hash_table, struct itens item);
 /* funções para calcular valor hash de um item */
 int chaveDivisao(int chave, int TABLE_SIZE);
 int calculaMultiplicacao(int chave, int TABLE_SIZE);
@@ -29,8 +30,11 @@ int calculaDobra(int chave, int TABLE_SIZE);
 int main(void)
 {
 	Hash *hash_table;
+	struct itens item;
 
 	hash_table = criaHash(1427);
+
+	insereHash_semColisao(hash_table, item);
 
 	liberaHash(hash_table);
 
@@ -76,6 +80,26 @@ void liberaHash(Hash *hash_table)
 	}
 }
 
+int insereHash_semColisao(Hash *hash_table, struct itens item)
+{
+	if(hash_table == NULL || hash_table->qtd == hash_table->TABLE_SIZE)
+		return 0;
+
+	int chave = item.valor;
+	int pos = chaveDivisao(chave, hash_table->TABLE_SIZE);
+	struct itens *novo;
+
+	novo = (struct itens *)malloc(sizeof(struct itens));
+
+	if(novo == NULL)
+		return 0;
+
+	*novo = item;
+	hash_table->item[pos] = novo;
+	hash_table->qtd++;
+	return 1;
+}
+
 /* Método da divisão ou Congruência Linear */
 int chaveDivisao(int chave, int TABLE_SIZE)
 {
@@ -90,7 +114,7 @@ int chaveDivisao(int chave, int TABLE_SIZE)
 /* Método da multiplicação ou congruência linear multiplicativo */
 int calculaMultiplicacao(int chave, int TABLE_SIZE)
 {
-	float A = 0.6180339887 /* Constante 0 < A < 1 */
+	float A = 0.6180339887; /* Constante 0 < A < 1 */
 	float val = chave * A;
 	val = val - (int)val;
 	return (int)(TABLE_SIZE * val);
@@ -108,4 +132,16 @@ int calculaDobra(int chave, int TABLE_SIZE)
 	int parte2 = chave & (TABLE_SIZE-1);
 
 	return parte1 ^ parte2;
+}
+
+/* Tratando string como chave */
+int valorString(char *str)
+{
+	int i, valor = 7;
+	int tam = strlen(str);
+
+	for(i=0; i<tam; i++)
+		valor = 31 * valor + (int)str[i];
+
+	return valor;
 }
