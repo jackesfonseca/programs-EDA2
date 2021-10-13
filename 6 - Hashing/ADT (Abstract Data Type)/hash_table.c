@@ -35,6 +35,7 @@ int main(void)
 {
 	Hash *hash_table;
 	struct itens item, item1, item2, item3, item4, item5;
+	struct itens item6, item7, item8, item9, item10;
 	int busca;
 
 	item1.valor = 1;
@@ -42,10 +43,15 @@ int main(void)
 	item3.valor = 564;
 	item4.valor = 1427;
 	item5.valor = 202020;
+	item6.valor = 234;
+	item7.valor = 7;
+	item8.valor = 2021;
+	item9.valor = 1111;
+	item10.valor = 699;
 
 	hash_table = criaHash(1427);
-
-	/* Sem tratamento de colisão */
+	
+	/* Sem tratamento de colisão 
 	insereHash_semColisao(hash_table, item1);
 	insereHash_semColisao(hash_table, item2);
 	insereHash_semColisao(hash_table, item3);
@@ -64,10 +70,14 @@ int main(void)
 	printf("%d %d\n", item.valor, busca);
 	busca = buscaHash_semColisao(hash_table, 63, &item);
 	printf("%d %d\n", item.valor, busca);
+	*/
 
 	/* Com tratamento de colisões */
-
-
+	insereHash_enderAberto(hash_table, item6);
+	insereHash_enderAberto(hash_table, item7);
+	insereHash_enderAberto(hash_table, item8);
+	insereHash_enderAberto(hash_table, item9);
+	insereHash_enderAberto(hash_table, item10);
 
 	liberaHash(hash_table);
 
@@ -137,7 +147,16 @@ int insereHash_semColisao(Hash *hash_table, struct itens item)
 /* Com tratamento de colisões */
 int insereHash_enderAberto(Hash *hash_table, struct itens item)
 {
-	
+	if(hash_table == NULL || hash_table->qtd == hash_table->TABLE_SIZE)
+		return 0;
+
+	int chave = calculaDivisao(chave, hash_table->TABLE_SIZE);
+	int i, pos, new_pos;
+
+	for(i=0; i<hash_table->TABLE_SIZE; i++)
+	{
+		new_pos = sondagemLinear();
+	}
 }
 
 int buscaHash_semColisao(Hash *hash_table, int valor, struct itens *item)
