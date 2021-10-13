@@ -22,7 +22,11 @@ int insereHash_semColisao(Hash *hash_table, struct itens item);
 int buscaHash_semColisao(Hash *hash_table, int valor, struct itens *item);
 int insereHash_enderAberto(Hash *hash_table, struct itens item);
 int buscaHash_enderAberto(Hash *hash_table, int valor, struct itens *item);
-/* funções para calcular valor hash de um item */
+/* Tratamento de colisões por endereçamento aberto */
+int sondagemLinear(int pos, int i, int TABLE_SIZE);
+int sondagemQuadratica(int pos, int i, int TABLE_SIZE);
+int duploHash(int H1, int chave, int i, int TABLE_SIZE);
+/* Funções para calcular valor hash de um item */
 int calculaDivisao(int chave, int TABLE_SIZE);
 int calculaMultiplicacao(int chave, int TABLE_SIZE);
 int calculaDobra(int chave, int TABLE_SIZE);
@@ -60,6 +64,10 @@ int main(void)
 	printf("%d %d\n", item.valor, busca);
 	busca = buscaHash_semColisao(hash_table, 63, &item);
 	printf("%d %d\n", item.valor, busca);
+
+	/* Com tratamento de colisões */
+
+
 
 	liberaHash(hash_table);
 
@@ -105,6 +113,7 @@ void liberaHash(Hash *hash_table)
 	}
 }
 
+/* Sem tratamento de colisões */
 int insereHash_semColisao(Hash *hash_table, struct itens item)
 {
 	if(hash_table == NULL || hash_table->qtd == hash_table->TABLE_SIZE)
@@ -125,6 +134,12 @@ int insereHash_semColisao(Hash *hash_table, struct itens item)
 	return 1;
 }
 
+/* Com tratamento de colisões */
+int insereHash_enderAberto(Hash *hash_table, struct itens item)
+{
+	
+}
+
 int buscaHash_semColisao(Hash *hash_table, int valor, struct itens *item)
 {
 	if(hash_table == NULL)
@@ -140,6 +155,33 @@ int buscaHash_semColisao(Hash *hash_table, int valor, struct itens *item)
 	return 1;
 }
 
+/* TRATAMENTO DE COLISÔES */
+/* Sondagem Linear (Problema do agrupamento primário) */
+int sondagemLinear(int pos, int i, int TABLE_SIZE)
+{
+	return ((pos + i) & 0x7FFFFFFF ) % TABLE_SIZE;
+}
+
+/* Sondagem Quadrática (Problema do agrpamento quadrático) */
+int sondagemQuadratica(int pos, int i, int TABLE_SIZE)
+{
+	pos = pos + 2*i + 5*i*i;
+	return (pos & 0x7FFFFFFF) % TABLE_SIZE;
+}
+
+/* Duplo Hash - Espalhamento duplo (Diminui problema do agrupamento) */
+/*
+	CUIDADOS
+1 - É necessário que as duas funções hash sejam diferentes
+2 - A segunda função hashing não pode resultar em um valor igual a zero (nesse caso não haveria deslocamento)
+*/
+int duploHash(int H1, int chave, int i, int TABLE_SIZE)
+{
+	int H2 = calculaDivisao(chave, TABLE_SIZE-1) + 1;
+	return ((H1 + i*H2) & 0x7FFFFFFF) % TABLE_SIZE;
+}
+
+/* FUNÇÔES HASH */
 /* Método da divisão ou Congruência Linear */
 int calculaDivisao(int chave, int TABLE_SIZE)
 {
