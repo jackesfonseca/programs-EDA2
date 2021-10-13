@@ -19,22 +19,47 @@ Hash *criaHash(int TABLE_SIZE);
 void liberaHash(Hash *hash_table);
 int valorString(char *str);
 int insereHash_semColisao(Hash *hash_table, struct itens item);
-int buscaHash_semColisao(Hash *hash_table, struct itens item);
+int buscaHash_semColisao(Hash *hash_table, int valor, struct itens *item);
 int insereHash_enderAberto(Hash *hash_table, struct itens item);
-int buscaHash_enderAberto(Hash *hash_table, struct itens item);
+int buscaHash_enderAberto(Hash *hash_table, int valor, struct itens *item);
 /* funções para calcular valor hash de um item */
-int chaveDivisao(int chave, int TABLE_SIZE);
+int calculaDivisao(int chave, int TABLE_SIZE);
 int calculaMultiplicacao(int chave, int TABLE_SIZE);
 int calculaDobra(int chave, int TABLE_SIZE);
 
 int main(void)
 {
 	Hash *hash_table;
-	struct itens item;
+	struct itens item, item1, item2, item3, item4, item5;
+	int busca;
+
+	item1.valor = 1;
+	item2.valor = 22;
+	item3.valor = 564;
+	item4.valor = 1427;
+	item5.valor = 202020;
 
 	hash_table = criaHash(1427);
 
-	insereHash_semColisao(hash_table, item);
+	/* Sem tratamento de colisão */
+	insereHash_semColisao(hash_table, item1);
+	insereHash_semColisao(hash_table, item2);
+	insereHash_semColisao(hash_table, item3);
+	insereHash_semColisao(hash_table, item4);
+	insereHash_semColisao(hash_table, item5);
+
+	busca = buscaHash_semColisao(hash_table, 1, &item);
+	printf("%d %d\n", item.valor, busca);
+	busca = buscaHash_semColisao(hash_table, 22, &item);
+	printf("%d %d\n", item.valor, busca);
+	busca = buscaHash_semColisao(hash_table, 564, &item);
+	printf("%d %d\n", item.valor, busca);
+	busca = buscaHash_semColisao(hash_table, 1427, &item);
+	printf("%d %d\n", item.valor, busca);
+	busca = buscaHash_semColisao(hash_table, 202020, &item);
+	printf("%d %d\n", item.valor, busca);
+	busca = buscaHash_semColisao(hash_table, 63, &item);
+	printf("%d %d\n", item.valor, busca);
 
 	liberaHash(hash_table);
 
@@ -86,7 +111,7 @@ int insereHash_semColisao(Hash *hash_table, struct itens item)
 		return 0;
 
 	int chave = item.valor;
-	int pos = chaveDivisao(chave, hash_table->TABLE_SIZE);
+	int pos = calculaDivisao(chave, hash_table->TABLE_SIZE);
 	struct itens *novo;
 
 	novo = (struct itens *)malloc(sizeof(struct itens));
@@ -100,8 +125,23 @@ int insereHash_semColisao(Hash *hash_table, struct itens item)
 	return 1;
 }
 
+int buscaHash_semColisao(Hash *hash_table, int valor, struct itens *item)
+{
+	if(hash_table == NULL)
+		return 0;
+
+	int pos = calculaDivisao(valor, hash_table->TABLE_SIZE);
+
+	if(hash_table->item[pos] == NULL)
+		return 0;
+
+	*item = *(hash_table->item[pos]);
+
+	return 1;
+}
+
 /* Método da divisão ou Congruência Linear */
-int chaveDivisao(int chave, int TABLE_SIZE)
+int calculaDivisao(int chave, int TABLE_SIZE)
 {
 	/* 
 	& - Operação bit a bit
