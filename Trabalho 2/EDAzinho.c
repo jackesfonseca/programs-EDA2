@@ -12,7 +12,7 @@ struct itens
 {
 	int row;
 	int column;
-	int valor;
+	//int valor;
 };
 
 struct hash
@@ -32,25 +32,52 @@ int calculaDivisao(int chave, int TABLE_SIZE);
  
 int main(void)
 {
-	int d, p_d, t_game, m, score; /* game score */
+	int d, p_s, t_score, m, score; /* game score */
 	int row, column, p_i, t_loop; /* start game data */
 	Hash *hash_table;
-	int TABLE_SIZE = 262139;
+	struct itens item;
+	int TABLE_SIZE = 262139, EDAzinho = 1, flag = 1;
 	struct timeval start, end; 
 	double program_time_t, program_time_s, program_time_m;
 	char command[256];
 
 	hash_table = criaHash(TABLE_SIZE);
 
-	scanf("%d %d %d %d", &row, &column, &p_i, &t_loop);
-
 	gettimeofday(&start, NULL);
 
-	while(t_loop >= 0)
-	{
+	scanf("%d %d %d %d", &row, &column, &p_i, &t_loop);
+	item.row = row;
+	item.column = column;
 
+	insereHash_enderAberto(hash_table, item);
+
+	row++;
+	column++;
+
+	printf("sondar %d %d\n", row, column);
+	insereHash_enderAberto(hash_table, item);
+
+	while(t_loop > 0)
+	{
+		scanf("%s", command);
+
+		if(strcmp(command, "sondar") == 0)
+		{
+
+		}
+
+		else if(strcmp(command, "dominar") == 0)
+		{
+
+		}
+		else
+		{
+			flag = 1;
+			break;
+		}
 
 		t_loop--;
+		printf("fimturno\n");
 	}
 
 	gettimeofday(&end, NULL);
@@ -58,6 +85,9 @@ int main(void)
 	program_time_s = end.tv_sec - start.tv_sec;
 	program_time_m = (end.tv_usec - start.tv_usec) / 1000000.0;
 	program_time_t = program_time_m + program_time_s;
+
+	if(flag == 1)
+		score = 0;
 
 	liberaHash(hash_table);
 
@@ -108,7 +138,7 @@ int insereHash_enderAberto(Hash *hash_table, struct itens item)
 	if(hash_table == NULL || hash_table->qtd == hash_table->TABLE_SIZE)
 		return 0;
 
-	int chave = item.valor;
+	int chave = item.row;
 	int i, pos, new_pos;
 	pos = calculaDivisao(chave, hash_table->TABLE_SIZE);
 
@@ -149,7 +179,7 @@ int buscaHash_enderAberto(Hash *hash_table, int valor, struct itens *item)
 		if(hash_table->item[new_pos] == NULL)
 			return 0;
 
-		if(hash_table->item[new_pos]->valor == valor)
+		if(hash_table->item[new_pos]->row == valor)
 		{
 			*item = *(hash_table->item[new_pos]);
 			return 1;
