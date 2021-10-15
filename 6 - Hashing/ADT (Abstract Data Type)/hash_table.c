@@ -36,7 +36,7 @@ int main(void)
 	Hash *hash_table;
 	struct itens item, item1, item2, item3, item4, item5;
 	struct itens item6, item7, item8, item9, item10;
-	int busca;
+	int busca, insere;
 
 	item1.valor = 1;
 	item2.valor = 22;
@@ -78,6 +78,19 @@ int main(void)
 	insereHash_enderAberto(hash_table, item8);
 	insereHash_enderAberto(hash_table, item9);
 	insereHash_enderAberto(hash_table, item10);
+
+	busca = buscaHash_enderAberto(hash_table, 234, &item);
+	printf("%d %d\n", item.valor, busca);
+	busca = buscaHash_enderAberto(hash_table, 7, &item);
+	printf("%d %d\n", item.valor, busca);
+	busca = buscaHash_enderAberto(hash_table, 2021, &item);
+	printf("%d %d\n", item.valor, busca);
+	busca = buscaHash_enderAberto(hash_table, 1111, &item);
+	printf("%d %d\n", item.valor, busca);
+	busca = buscaHash_enderAberto(hash_table, 699, &item);
+	printf("%d %d\n", item.valor, busca);
+	busca = buscaHash_enderAberto(hash_table, 777, &item);
+	printf("%d %d\n", item.valor, busca);
 
 	liberaHash(hash_table);
 
@@ -150,13 +163,30 @@ int insereHash_enderAberto(Hash *hash_table, struct itens item)
 	if(hash_table == NULL || hash_table->qtd == hash_table->TABLE_SIZE)
 		return 0;
 
-	int chave = calculaDivisao(chave, hash_table->TABLE_SIZE);
+	int chave = item.valor;
 	int i, pos, new_pos;
+	pos = calculaDivisao(chave, hash_table->TABLE_SIZE);
 
 	for(i=0; i<hash_table->TABLE_SIZE; i++)
 	{
-		new_pos = sondagemLinear();
+		new_pos = sondagemLinear(pos, i, hash_table->TABLE_SIZE);
+		if(hash_table->item[new_pos] == NULL)
+		{
+			struct itens *novo;
+			novo = (struct itens *)malloc(sizeof(struct itens));
+
+			if(novo == NULL)
+				return 0;
+
+			*novo = item;
+			hash_table->item[new_pos] = novo;
+			hash_table->qtd++;
+
+			return 1;
+		}
 	}
+
+	return 0;
 }
 
 int buscaHash_semColisao(Hash *hash_table, int valor, struct itens *item)
@@ -172,6 +202,31 @@ int buscaHash_semColisao(Hash *hash_table, int valor, struct itens *item)
 	*item = *(hash_table->item[pos]);
 
 	return 1;
+}
+
+int buscaHash_enderAberto(Hash *hash_table, int valor, struct itens *item)
+{
+	if(hash_table == NULL)
+		return 0;
+
+	int i, pos, new_pos;
+	pos = calculaDivisao(valor, hash_table->TABLE_SIZE);
+
+	for(i=0; i<hash_table->TABLE_SIZE; i++)
+	{
+		new_pos = sondagemLinear(pos, i, hash_table->TABLE_SIZE);
+
+		if(hash_table->item[new_pos] == NULL)
+			return 0;
+
+		if(hash_table->item[new_pos]->valor == valor)
+		{
+			*item = *(hash_table->item[new_pos]);
+			return 1;
+		}
+	}
+
+	return 0;
 }
 
 /* TRATAMENTO DE COLISÔES */
