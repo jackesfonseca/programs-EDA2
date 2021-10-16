@@ -1,62 +1,51 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* Adjacent list
-
-1 -> 3
-2 -> NULL
-3 -> 1
-4 -> NULL
-
-*/
-
-typedef struct graph
+struct grafo
 {
-	int v; /* vertex amount*/
-	int e; /* edge amount */
-	int **adj;
-}Graph;
-
-typedef struct node *link;
-
-struct node
-{
-	int v;
-	link next;
+	int eh_ponderado;
+	int nro_vertices;
+	int grau_max;
+	int **arestas;
+	float **pesos;
+	int *grau;
 };
 
-link new(int v, link next);
-Graph init_graph(int v);
+typedef struct grafo Grafo;
+
+Grafo *criaGrafo(int nro_vertices, int grau_max, int eh_ponderado);
 
 int main(void)
 {
+	Grafo *grafo;
 
+	grafo = criaGrafo(10, 7, 0);
 
 	return 0;
 }
 
-link new(int v, link next)
+Grafo *criaGrafo(int nro_vertices, int grau_max, int eh_ponderado)
 {
-	link x = malloc(sizeof(x));
+	Grafo *grafo = (Grafo *)malloc(sizeof(Grafo));
 
-	x->v = v;
-	x->next = next;
-
-	return x;
-}
-
-Graph init_graph(int v)
-{
-	int i;
-	Graph *graph = malloc(sizeof(Graph));
-
-	graph->v = v;
-	graph->e = 0;
-	graph->adj = malloc(v * sizeof(link));
-
-	for(i=0; i<v; i++)
+	if(grafo != NULL)
 	{
-		graph->v = NULL;
+		int i;
+		grafo->nro_vertices = nro_vertices;
+		grafo->grau_max = grau_max;
+		grafo->eh_ponderado = (eh_ponderado != 0)?1 : 0;
+		grafo->grau = (int *)malloc(nro_vertices * sizeof(int));
+		grafo->arestas = (int **)malloc(nro_vertices * (sizeof(int *)));
+
+		for(i=0; i<nro_vertices; i++)
+			grafo->arestas[i] = (int *)malloc(grau_max*sizeof(int));
+			if(grafo->eh_ponderado)
+			{
+				grafo->pesos = (float **)malloc(nro_vertices * sizeof(float *));
+				for(i=0; i<nro_vertices; i++)
+					grafo->pesos[i] = (float *)malloc(grau_max * sizeof(float));
+			}
 	}
-	return graph;
+
+	return grafo;
 }
