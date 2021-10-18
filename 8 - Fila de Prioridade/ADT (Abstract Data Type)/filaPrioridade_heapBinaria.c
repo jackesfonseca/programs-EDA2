@@ -59,6 +59,8 @@ int main(void)
 	consulta = consulta_FilaPrio(fp);
 	printf("Consulta: %d\n", consulta);
 
+	libera_FilaPrio(fp);
+
 	return 0;
 }
 
