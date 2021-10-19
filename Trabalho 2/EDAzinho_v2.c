@@ -40,7 +40,7 @@ int consulta_FilaPrio(FilaPrio *fp);
 int main(void)
 {
 	int row, column, p_i, t_loop; /* start game data */
-	//int **hash_table;
+	int i, j, k;
 	Matriz **matriz;
 	FilaPrio *fp;
 	int TABLE_SIZE = 262139, EDAzinhos = 1, flag = 1, consulta;
@@ -48,8 +48,6 @@ int main(void)
 
 	matriz = hash_init(TABLE_SIZE);
 	fp = cria_FilaPrio();
-
-	printf("%d\n", matriz[row][column].row);
 
 	scanf("%d %d %d %d", &row, &column, &p_i, &t_loop); /* lê dados iniciais*/
 	matriz[row][column].row = row;
@@ -59,34 +57,23 @@ int main(void)
 
 	insere_FilaPrio(fp, matriz[row][column], matriz[row][column].pontuacao);
 
-	/* print teste */
-	//printf("%d %d\n", hash_table[row][column], hash_table[0][0]);
-	//consulta = consulta_FilaPrio(fp);
-	//printf("%d\n", consulta);
-	/* fim print teste */
-
-	printf("sondar %d %d\n", (row+1), (column+1));
+	/*if
+	consulta = consulta_FilaPrio(fp);
+	printf("%d\n", consulta);
+	#endif
+	*/
 
 	while(t_loop > 0)
 	{
-		scanf("%s", command);	/* lê comando */
+		for(i=0; i<EDAzinhos; i++)
+			printf("sondar %d %d\n", (row+1), (column+1));
 
-		if(strcmp(command, "sondar") == 0)
-		{
+		scanf("%s %d %d", command, &row, &column);	/* lê comando */
 
-		}
-
-		else if(strcmp(command, "dominar") == 0)
-		{
-
-		}
-		else
-		{
-			flag = 1;
-			break;
-		}
+		
 
 		t_loop--;
+		EDAzinhos++;
 		printf("fimturno\n");
 
 		fflush(stdout);
