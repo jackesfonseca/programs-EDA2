@@ -11,6 +11,8 @@ struct Areas_aSer_dominadas
 {
 	int row;
 	int column;
+	//int sondado;
+	int dominado;
 };
 
 struct mat
@@ -31,8 +33,8 @@ struct fila_prioridade
 typedef struct fila_prioridade FilaPrio;
 typedef struct mat Matriz;
 
-Matriz **hash_init(int TABLE_SIZE);
-void liberaHash(Matriz **hash_table, int TABLE_SIZE);
+Matriz *hash_init(int TABLE_SIZE);
+void liberaHash(Matriz *hash_table, int TABLE_SIZE);
 FilaPrio* cria_FilaPrio();
 void libera_FilaPrio(FilaPrio *fp);
 int estaCheia_FilaPrio(FilaPrio *fp);
@@ -46,11 +48,11 @@ int consulta_FilaPrio(FilaPrio *fp);
 int main(void)
 {
 	int row, column, p_i, t_loop; /* start game data */
-	int i, j, k, l;
-	Matriz **matriz;
+	int i, j, k, l, pontuacao[1000];
+	Matriz *matriz;
 	Matriz *consulta;
 	FilaPrio *fp;
-	int TABLE_SIZE = 1000, EDAzinhos = 0, cont_dominadas = 0, cont_turnos=0;
+	int TABLE_SIZE = 1000000, EDAzinhos = 0, cont_dominadas = 0, cont_turnos=0, cont_pontuacao=0;
 	char command[256];
 
 	matriz = hash_init(TABLE_SIZE);
@@ -58,29 +60,34 @@ int main(void)
 
 	/* valores iniciais */
 	scanf("%d %d %d %d", &row, &column, &p_i, &t_loop); /* lê dados iniciais*/
-	matriz[row][column].row = row;
-	matriz[row][column].column = column;
-	matriz[row][column].pontuacao = p_i;
-	matriz[row][column].sondado = 0;
+	matriz[p_i].row = row;
+	matriz[p_i].column = column;
+	matriz[p_i].pontuacao = p_i;
+	matriz[p_i].sondado = 0;
+	pontuacao[cont_pontuacao++] = p_i;
 
-	insere_FilaPrio(fp, matriz[row][column], matriz[row][column].pontuacao);
+	insere_FilaPrio(fp, matriz[p_i], matriz[p_i].pontuacao);
 
 	/* get areas that can be dominated */
-	for(k=(row-1); k<=(row+1); row++)
+	for(k=(row-1); k<=(row+1); k++)
 	{
 		for(l=(column-1); l<=(column+1); l++)
 		{
 			if(k != row && l != column)
 			{
-				matriz[row][column].areas_aSer_dominadas[cont_dominadas].column = column;
-				matriz[row][column].areas_aSer_dominadas[cont_dominadas].row = row;
+				matriz[p_i].areas_aSer_dominadas[cont_dominadas].column = l;
+				matriz[p_i].areas_aSer_dominadas[cont_dominadas].row = k;
+
+				printf("%d %d\n", l, k);
 			}
-			cont_dominadas++;
+
 		}
+		cont_dominadas++;
+		//printf("%d\n", cont_dominadas);
 	}
 
 	row++;
-	colum+;
+	column++;
 	printf("sondar %d %d\n", row, column);
 
 	printf("fimturno\n");
@@ -88,12 +95,12 @@ int main(void)
 
 	/* turno 0 */
 	scanf("%s %d %d %d", command, &row, &column, &p_i);	/* sondar */
-	matriz[row][column].row = row;
-	matriz[row][column].column = column;
-	matriz[row][column].pontuacao = p_i;
-	matriz[row][column].sondado = 1;
+	matriz[p_i].row = row;
+	matriz[p_i].column = column;
+	matriz[p_i].pontuacao = p_i;
+	matriz[p_i].sondado = 1;
 
-	insere_FilaPrio(fp, matriz[row][column], matriz[row][column].pontuacao);
+	insere_FilaPrio(fp, matriz[p_i], matriz[p_i].pontuacao);
 
 
 
@@ -133,7 +140,7 @@ int main(void)
 
 		EDAzinhos++;
 		//t_loop--;
-		areas_dominadas++;
+		//areas_dominadas++;
 		cont_turnos++;
 
 		printf("fimturno\n");
@@ -146,25 +153,19 @@ int main(void)
 }
 
 /* Hash Table */
-Matriz **hash_init(int TABLE_SIZE)
+Matriz *hash_init(int TABLE_SIZE)
 {
-	Matriz **matriz;
+	Matriz *matriz;
 	int i; 
 
-	matriz = (Matriz **)malloc(sizeof(Matriz *) * TABLE_SIZE);
-
-	for(i=0; i<TABLE_SIZE; i++)
-		matriz[i] = (Matriz *)malloc(sizeof(Matriz) * TABLE_SIZE);
+	matriz = (Matriz *)malloc(sizeof(Matriz) * TABLE_SIZE);
 
 	return matriz;
 }
 
-void liberaHash(Matriz **matriz, int TABLE_SIZE)
+void liberaHash(Matriz *matriz, int TABLE_SIZE)
 {
 	int i;
-
-	for(i=0; i<TABLE_SIZE; i++)
-		free(matriz[i]);
 
 	free(matriz);
 }
