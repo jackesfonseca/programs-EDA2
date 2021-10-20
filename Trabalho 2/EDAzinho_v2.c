@@ -44,7 +44,7 @@ int main(void)
 	Matriz **matriz;
 	Matriz *consulta;
 	FilaPrio *fp;
-	int TABLE_SIZE = 262139, EDAzinhos = 1, areas_dominadas = 0;
+	int TABLE_SIZE = 262139, EDAzinhos = 0, areas_dominadas = 0;
 	char command[256];
 
 	matriz = hash_init(TABLE_SIZE);
@@ -74,6 +74,14 @@ int main(void)
 	matriz[row][column].sondado = 1;
 
 	insere_FilaPrio(fp, matriz[row][column], matriz[row][column].pontuacao);
+
+	printf("domidar %d %d\n", row, column);
+	row++;
+	column++;
+	printf("sondar %d %d\n", row, column);
+
+	printf("fimturno\n");
+	fflush(stdout);
 
 	while(t_loop > 0)
 	{
@@ -105,9 +113,6 @@ int main(void)
 		t_loop--;
 		EDAzinhos++;
 		areas_dominadas++;
-
-		printf("fimturno\n");
-		fflush(stdout);
 	}
 
 	liberaHash(matriz, TABLE_SIZE);
