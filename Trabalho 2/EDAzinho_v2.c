@@ -40,7 +40,7 @@ Matriz *consulta_FilaPrio(FilaPrio *fp);
 int main(void)
 {
 	int row, row_l, column, column_l, p_i, t_loop; /* start game data */
-	int i, j, k, l, c;
+	int i, j, k, l, c, areas_dominadas[100][100];
 	Matriz **matriz;
 	Matriz *consulta;
 	FilaPrio *fp;
@@ -57,7 +57,7 @@ int main(void)
 	matriz[row][column].pontuacao = p_i;
 	matriz[row][column].tipo = 'D';
 
-	insere_FilaPrio(fp, matriz[row][column], matriz[row][column].pontuacao);
+	//insere_FilaPrio(fp, matriz[row][column], matriz[row][column].pontuacao);
 
 	/* inserir valores livres */
 	row_l = row; /* row armazena antiga linha dominada */
@@ -106,8 +106,9 @@ int main(void)
 
 	insere_FilaPrio(fp, matriz[row][column], matriz[row][column].pontuacao);
 
-	/* remove posição para dominação */
+	/* consulta e remove posição para dominação */
 	consulta = consulta_FilaPrio(fp);
+	remove_FilaPrio(fp);
 	printf("dominar %d %d\n", consulta->row, consulta->column);
 
 	/* verifica células livres para sondagem */
@@ -141,6 +142,26 @@ int main(void)
 			if(strcmp(command, "dominacao") == 0)
 			{
 				scanf("%d", &p_i);
+				/* armazena área dominada */
+
+
+				/* marca área livre */
+				/* inserir valores livres */
+				row_l = row; /* row armazena antiga linha dominada */
+				column_l = column; /* column aramzena antiga coluna dominada */
+
+				for(l=(row_l-1); l<=(row_l+1); l++)
+				{
+					for(c=(column_l-1); c<=(column_l+1); c++)
+					{
+						if(matriz[l][c].tipo != 'D')
+						{
+							matriz[l][c].row = l;
+							matriz[l][c].column = c;
+							matriz[l][c].tipo = 'L';
+						}
+					}
+				}
 			}
 
 			else if(strcmp(command, "sondagem") == 0)
@@ -150,6 +171,8 @@ int main(void)
 				matriz[row][column].column = column;
 				matriz[row][column].pontuacao = p_i;
 				matriz[row][column].tipo = 'S';
+
+				insere_FilaPrio(fp, matriz[row][column], matriz[row][column].pontuacao);				
 			}
 
 			else
@@ -160,14 +183,25 @@ int main(void)
 
 		for(i=0; i<EDAzinhos+1; i++)
 		{
-			row++;
-			column++;
+			/* verifica células livres para sondagem */
+			row_l = row;
+			column_l = column;
+	
+			for(l=(row_l-1); l<=(row_l+1); l++)
+			{
+				for(c=(column_l-1); c<=(column_l+1); c++)
+				{
+					if(matriz[l][c].tipo == 'L')
+					{
+						row = matriz[l][c].row;
+						column = matriz[l][c].column;
+					}
+				}
+			}
 			printf("sondar %d %d\n", row, column);
 		}
 
 		EDAzinhos++;
-		//t_loop--;
-		//areas_dominadas++;
 		cont_turnos++;
 
 		printf("fimturno\n");
