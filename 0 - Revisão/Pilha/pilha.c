@@ -20,16 +20,34 @@ void libera_pilha(Pilha* pilha);
 int tamanho_pilha(Pilha* pilha);
 int pilha_vazia(Pilha* pilha);
 int insere_pilha(Pilha* pilha, struct mat item);
+int remove_pilha(Pilha* pilha);
+int consulta_pilha(Pilha* pilha);
 
 int main()
 {
 	Pilha *pilha;
 	struct mat item;
-	int tam, i, j;
+	int tam, l, c;
 
 	pilha = cria_pilha();
 
-	for(i)
+	/* insert data */
+	for(l=0; l<3; l++)
+	{
+		for(c=0; c<3; c++)
+		{
+			item.row = l;
+			item.column = c;
+			item.pontuacao = l*c*c;
+			insere_pilha(pilha, item);
+			/* print teste */
+			printf("linha: %d coluna: %d\n", (*pilha)->dados.row, (*pilha)->dados.column);
+		}
+	}
+
+	remove_pilha(pilha);
+	/* print teste */
+	printf("linha: %d coluna: %d\n", (*pilha)->dados.row, (*pilha)->dados.column);
 
 	libera_pilha(pilha);
 
@@ -56,7 +74,7 @@ void libera_pilha(Pilha* pilha)
 			*pilha = (*pilha)->prox;
 			free(no);
 		}
-		free(no);
+		free(pilha);
 	}
 
 }
@@ -67,7 +85,7 @@ int tamanho_pilha(Pilha* pilha)
 		return 0;
 
 	int cont=0;
-	Elem* no = *pi;
+	Elem* no = *pilha;
 	while(no != NULL)
 	{
 		cont++;
@@ -81,7 +99,7 @@ int pilha_vazia(Pilha* pilha)
 {
 	if(pilha == NULL) /* representação da pilha */
 		return 1;
-	if(*pi == NULL) /* representação do topo */
+	if(*pilha == NULL) /* representação do topo */
 		return 1;
 
 	return 0;
@@ -97,7 +115,27 @@ int insere_pilha(Pilha* pilha, struct mat item)
 		return 0;
 
 	no->dados = item;
-	no->prox = (* pilha);
-
+	no->prox = (*pilha);
+	*pilha = no;
 	return 1;
+}
+
+int remove_pilha(Pilha* pilha)
+{
+	if(pilha == NULL)
+		return 0;
+
+	if((*pilha) == NULL)
+		return 0;
+
+	Elem *no = *pilha;
+	*pilha = no->prox;
+	free(no);
+
+	return -1;
+}
+
+int consulta_pilha(Pilha* pilha)
+{
+
 }
