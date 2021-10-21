@@ -7,21 +7,13 @@
 	sondagem L' C' P
 	dominacao P
 */
-struct Areas_aSer_dominadas
-{
-	int row;
-	int column;
-	//int sondado;
-	int dominado;
-};
 
 struct mat
 {
 	int pontuacao;
-	int sondado;
 	int row;
 	int column;
-	struct Areas_aSer_dominadas areas_aSer_dominadas[8];
+	char tipo;
 };
 
 struct fila_prioridade
@@ -48,11 +40,11 @@ int consulta_FilaPrio(FilaPrio *fp);
 int main(void)
 {
 	int row, column, p_i, t_loop; /* start game data */
-	int i, j, k, l, pontuacao[1000];
+	int i, j, k, l, c;
 	Matriz *matriz;
 	Matriz *consulta;
 	FilaPrio *fp;
-	int TABLE_SIZE = 1000000, EDAzinhos = 0, cont_dominadas = 0, cont_turnos=0, cont_pontuacao=0;
+	int TABLE_SIZE = 1000000, EDAzinhos = 1, cont_dominadas = 0, cont_turnos=0;
 	char command[256];
 
 	matriz = hash_init(TABLE_SIZE);
@@ -63,28 +55,9 @@ int main(void)
 	matriz[p_i].row = row;
 	matriz[p_i].column = column;
 	matriz[p_i].pontuacao = p_i;
-	matriz[p_i].sondado = 0;
-	pontuacao[cont_pontuacao++] = p_i;
+	matriz[p_i].tipo = 'S';
 
 	insere_FilaPrio(fp, matriz[p_i], matriz[p_i].pontuacao);
-
-	/* get areas that can be dominated */
-	for(k=(row-1); k<=(row+1); k++)
-	{
-		for(l=(column-1); l<=(column+1); l++)
-		{
-			if(k != row && l != column)
-			{
-				matriz[p_i].areas_aSer_dominadas[cont_dominadas].column = l;
-				matriz[p_i].areas_aSer_dominadas[cont_dominadas].row = k;
-
-				printf("%d %d\n", l, k);
-			}
-
-		}
-		cont_dominadas++;
-		//printf("%d\n", cont_dominadas);
-	}
 
 	row++;
 	column++;
@@ -98,11 +71,9 @@ int main(void)
 	matriz[p_i].row = row;
 	matriz[p_i].column = column;
 	matriz[p_i].pontuacao = p_i;
-	matriz[p_i].sondado = 1;
+	matriz[p_i].tipo = 'S';
 
 	insere_FilaPrio(fp, matriz[p_i], matriz[p_i].pontuacao);
-
-
 
 	printf("dominar %d %d\n", row, column);
 	row++;
@@ -115,15 +86,32 @@ int main(void)
 	while((t_loop-1) > cont_turnos)
 	{
 		/* turno 1 em diante */
-		for(j=0; j<EDAzinhos+2; j++)
+		for(j=0; j<EDAzinhos+1; j++)
 		{
 			scanf("%s", command);	/* dominar */
 
 			if(strcmp(command, "dominacao") == 0)
+			{
 				scanf("%d", &p_i);
+				matriz[p_i].tipo = 'D';
+			}
 
 			else if(strcmp(command, "sondagem") == 0)
+			{
 				scanf("%d %d %d", &row, &column, &p_i);
+				matriz[p_i].row = row;
+				matriz[p_i].column = column;
+				matriz[p_i].pontuacao = p_i;
+				matriz[p_i].tipo = 'S';
+
+				for(l=0; l<3; l++)
+				{
+					for(c=0; c<3; c++)
+					{
+						
+					}
+				}
+			}
 
 			else
 				break;
@@ -131,7 +119,7 @@ int main(void)
 
 		printf("dominar %d %d\n", row, column);
 
-		for(i=0; i<EDAzinhos+2; i++)
+		for(i=0; i<EDAzinhos+1; i++)
 		{
 			row++;
 			column++;

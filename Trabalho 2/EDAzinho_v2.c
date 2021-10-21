@@ -7,19 +7,13 @@
 	sondagem L' C' P
 	dominacao P
 */
-struct Areas_aSer_dominadas
-{
-	int row;
-	int column;
-};
 
 struct mat
 {
 	int pontuacao;
-	int sondado;
 	int row;
 	int column;
-	struct Areas_aSer_dominadas areas_aSer_dominadas[8];
+	char tipo;
 };
 
 struct fila_prioridade
@@ -39,18 +33,18 @@ int estaCheia_FilaPrio(FilaPrio *fp);
 int estaVazia_FilaPrio(FilaPrio *fp);
 int insere_FilaPrio(FilaPrio *fp, Matriz matriz, int prio);
 void promoverElemento(FilaPrio *fp, int filho);
-Matriz *remove_FilaPrio(FilaPrio *fp);
+int remove_FilaPrio(FilaPrio *fp);
 void rebaixarElemento(FilaPrio *fp, int pai);
-int consulta_FilaPrio(FilaPrio *fp);
+Matriz *consulta_FilaPrio(FilaPrio *fp);
  
 int main(void)
 {
-	int row, column, p_i, t_loop; /* start game data */
-	int i, j, k, l;
+	int row, row_l, column, column_l, p_i, t_loop; /* start game data */
+	int i, j, k, l, c;
 	Matriz **matriz;
 	Matriz *consulta;
 	FilaPrio *fp;
-	int TABLE_SIZE = 1000, EDAzinhos = 0, cont_dominadas = 0, cont_turnos=0;
+	int TABLE_SIZE = 1000, EDAzinhos = 1, cont_dominadas = 0, cont_turnos=0;
 	char command[256];
 
 	matriz = hash_init(TABLE_SIZE);
@@ -61,26 +55,43 @@ int main(void)
 	matriz[row][column].row = row;
 	matriz[row][column].column = column;
 	matriz[row][column].pontuacao = p_i;
-	matriz[row][column].sondado = 0;
+	matriz[row][column].tipo = 'D';
 
 	insere_FilaPrio(fp, matriz[row][column], matriz[row][column].pontuacao);
 
-	/* get areas that can be dominated */
-	for(k=(row-1); k<=(row+1); row++)
+	/* inserir valores livres */
+	row_l = row; /* row armazena antiga linha dominada */
+	column_l = column; /* column aramzena antiga coluna dominada */
+
+	for(l=(row_l-1); l<=(row_l+1); l++)
 	{
-		for(l=(column-1); l<=(column+1); l++)
+		for(c=(column_l-1); c<=(column_l+1); c++)
 		{
-			if(k != row && l != column)
+			if(matriz[l][c].tipo != 'D')
 			{
-				matriz[row][column].areas_aSer_dominadas[cont_dominadas].column = column;
-				matriz[row][column].areas_aSer_dominadas[cont_dominadas].row = row;
+				matriz[l][c].row = l;
+				matriz[l][c].column = c;
+				matriz[l][c].tipo = 'L';
 			}
-			cont_dominadas++;
 		}
 	}
 
-	row++;
-	colum+;
+	/* verifica células livres para sondagem */
+	row_l = row;
+	column_l = column;
+	
+	for(l=(row_l-1); l<=(row_l+1); l++)
+	{
+		for(c=(column_l-1); c<=(column_l+1); c++)
+		{
+			if(matriz[l][c].tipo == 'L')
+			{
+				row = matriz[l][c].row;
+				column = matriz[l][c].column;
+			}
+		}
+	}
+
 	printf("sondar %d %d\n", row, column);
 
 	printf("fimturno\n");
@@ -91,15 +102,30 @@ int main(void)
 	matriz[row][column].row = row;
 	matriz[row][column].column = column;
 	matriz[row][column].pontuacao = p_i;
-	matriz[row][column].sondado = 1;
+	matriz[row][column].tipo = 'S';
 
 	insere_FilaPrio(fp, matriz[row][column], matriz[row][column].pontuacao);
 
+	/* remove posição para dominação */
+	consulta = consulta_FilaPrio(fp);
+	printf("dominar %d %d\n", consulta->row, consulta->column);
 
+	/* verifica células livres para sondagem */
+	row_l = row;
+	column_l = column;
+	
+	for(l=(row_l-1); l<=(row_l+1); l++)
+	{
+		for(c=(column_l-1); c<=(column_l+1); c++)
+		{
+			if(matriz[l][c].tipo == 'L')
+			{
+				row = matriz[l][c].row;
+				column = matriz[l][c].column;
+			}
+		}
+	}
 
-	printf("dominar %d %d\n", row, column);
-	row++;
-	column++;
 	printf("sondar %d %d\n", row, column);
 
 	printf("fimturno\n");
@@ -108,15 +134,23 @@ int main(void)
 	while((t_loop-1) > cont_turnos)
 	{
 		/* turno 1 em diante */
-		for(j=0; j<EDAzinhos+2; j++)
+		for(j=0; j<EDAzinhos+1; j++)
 		{
 			scanf("%s", command);	/* dominar */
 
 			if(strcmp(command, "dominacao") == 0)
+			{
 				scanf("%d", &p_i);
+			}
 
 			else if(strcmp(command, "sondagem") == 0)
+			{
 				scanf("%d %d %d", &row, &column, &p_i);
+				matriz[row][column].row = row;
+				matriz[row][column].column = column;
+				matriz[row][column].pontuacao = p_i;
+				matriz[row][column].tipo = 'S';
+			}
 
 			else
 				break;
@@ -124,7 +158,7 @@ int main(void)
 
 		printf("dominar %d %d\n", row, column);
 
-		for(i=0; i<EDAzinhos+2; i++)
+		for(i=0; i<EDAzinhos+1; i++)
 		{
 			row++;
 			column++;
@@ -133,7 +167,7 @@ int main(void)
 
 		EDAzinhos++;
 		//t_loop--;
-		areas_dominadas++;
+		//areas_dominadas++;
 		cont_turnos++;
 
 		printf("fimturno\n");
@@ -208,7 +242,7 @@ int insere_FilaPrio(FilaPrio *fp, Matriz matriz, int prio)
 		return 0;
 
 	fp->dados[fp->qtd] = matriz;
-	promoverElemento(fp, fp->qtd);
+	rebaixarElemento(fp, fp->qtd);
 	fp->qtd++;
 	return 1;
 }
@@ -230,20 +264,18 @@ void promoverElemento(FilaPrio *fp, int filho)
 	}
 }
 
-Matriz *remove_FilaPrio(FilaPrio *fp)
+int remove_FilaPrio(FilaPrio *fp)
 {
 	if(fp == NULL)
-		return NULL;
+		return 0;
 
 	if(estaVazia_FilaPrio(fp))
-		return NULL;
+		return 0;
 
-	Matriz *temp;
-	*temp = fp->dados[fp->qtd];
 	fp->qtd--;
 	fp->dados[0] = fp->dados[fp->qtd];
-	rebaixarElemento(fp, 0);
-	return temp;
+	promoverElemento(fp, 0);
+	return 1;
 }
 
 void rebaixarElemento(FilaPrio *fp, int pai)
@@ -274,13 +306,13 @@ void rebaixarElemento(FilaPrio *fp, int pai)
 	}
 }
 
-int consulta_FilaPrio(FilaPrio *fp)
+Matriz *consulta_FilaPrio(FilaPrio *fp)
 {
 	if(fp == NULL)
-		return 0;
+		return NULL;
 
 	if(estaVazia_FilaPrio(fp))
-		return 0;
+		return NULL;
 
-	return fp->dados[fp->qtd-1].pontuacao;
+	return &(fp->dados[fp->qtd-1]);
 }
