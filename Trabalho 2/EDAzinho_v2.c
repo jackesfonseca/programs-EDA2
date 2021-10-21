@@ -22,6 +22,14 @@ struct fila_prioridade
 	struct mat dados[MAX];
 };
 
+struct elemento
+{
+	struct mat dados;
+	struct elemento *prox;
+};
+
+typedef struct elemento* Pilha;
+typedef struct elemento Elem;
 typedef struct fila_prioridade FilaPrio;
 typedef struct mat Matriz;
 
@@ -36,6 +44,10 @@ void promoverElemento(FilaPrio *fp, int filho);
 int remove_FilaPrio(FilaPrio *fp);
 void rebaixarElemento(FilaPrio *fp, int pai);
 Matriz *consulta_FilaPrio(FilaPrio *fp);
+Pilha* cria_pilha();
+void libera_pilha(Pilha* pilha);
+int insere_pilha(Pilha* pilha, struct mat item);
+int remove_pilha(Pilha* pilha);
  
 int main(void)
 {
@@ -43,12 +55,14 @@ int main(void)
 	int i, j, k, l, c, areas_dominadas[100][100];
 	Matriz **matriz;
 	Matriz *consulta;
+	Pilha *pilha;
 	FilaPrio *fp;
-	int TABLE_SIZE = 1000, EDAzinhos = 1, cont_dominadas = 0, cont_turnos=0;
+	int TABLE_SIZE = 1000, EDAzinhos = 1, cont_turnos=0;
 	char command[256];
 
 	matriz = hash_init(TABLE_SIZE);
 	fp = cria_FilaPrio();
+	pilha = cria_pilha();
 
 	/* valores iniciais */
 	scanf("%d %d %d %d", &row, &column, &p_i, &t_loop); /* lê dados iniciais*/
@@ -57,9 +71,9 @@ int main(void)
 	matriz[row][column].pontuacao = p_i;
 	matriz[row][column].tipo = 'D';
 
-	//insere_FilaPrio(fp, matriz[row][column], matriz[row][column].pontuacao);
+	insere_pilha(pilha, matriz[row][column]);
 
-	/* inserir valores livres */
+	/* armazena informação de área livre nas células adjacentes */
 	row_l = row; /* row armazena antiga linha dominada */
 	column_l = column; /* column aramzena antiga coluna dominada */
 
@@ -76,9 +90,9 @@ int main(void)
 		}
 	}
 
-	/* verifica células livres para sondagem */
-	row_l = row;
-	column_l = column;
+	/* verifica células livres para sondagem (Adjacentes à áreas dominadas) */
+	row_l = (*pilha)->dados.row;
+	column_l = (*pilha)->dados.column;
 	
 	for(l=(row_l-1); l<=(row_l+1); l++)
 	{
@@ -106,14 +120,14 @@ int main(void)
 
 	insere_FilaPrio(fp, matriz[row][column], matriz[row][column].pontuacao);
 
-	/* consulta e remove posição para dominação */
+	/* consulta e remove posição para dominação (área sondada previamente)*/
 	consulta = consulta_FilaPrio(fp);
-	remove_FilaPrio(fp);
 	printf("dominar %d %d\n", consulta->row, consulta->column);
+	remove_FilaPrio(fp);
 
-	/* verifica células livres para sondagem */
-	row_l = row;
-	column_l = column;
+	/* verifica células livres para sondagem (Adjacentes à áreas dominadas) */
+	row_l = (*pilha)->dados.row;
+	column_l = (*pilha)->dados.column;
 	
 	for(l=(row_l-1); l<=(row_l+1); l++)
 	{
@@ -209,6 +223,8 @@ int main(void)
 	}
 
 	liberaHash(matriz, TABLE_SIZE);
+	libera_FilaPrio(fp);
+	libera_pilha(pilha);
 
 	return 0;
 }
@@ -349,4 +365,60 @@ Matriz *consulta_FilaPrio(FilaPrio *fp)
 		return NULL;
 
 	return &(fp->dados[fp->qtd-1]);
+}
+
+/* stack */
+Pilha* cria_pilha()
+{
+	Pilha *pilha = (Pilha*)malloc(sizeof(Pilha));
+	if(pilha != NULL)
+		*pilha = NULL;
+
+	return pilha;
+}
+
+void libera_pilha(Pilha* pilha)
+{
+	if(pilha != NULL)
+	{
+		Elem* no;
+		while((*pilha) != NULL)
+		{
+			no = *pilha;
+			*pilha = (*pilha)->prox;
+			free(no);
+		}
+		free(pilha);
+	}
+
+}
+
+int insere_pilha(Pilha* pilha, struct mat item)
+{
+	if(pilha == NULL)
+		return 0;
+
+	Elem* no = (Elem*)malloc(sizeof(Elem));
+	if(no == NULL)
+		return 0;
+
+	no->dados = item;
+	no->prox = (*pilha);
+	*pilha = no;
+	return 1;
+}
+
+int remove_pilha(Pilha* pilha)
+{
+	if(pilha == NULL)
+		return 0;
+
+	if((*pilha) == NULL)
+		return 0;
+
+	Elem *no = *pilha;
+	*pilha = no->prox;
+	free(no);
+
+	return -1;
 }
