@@ -137,6 +137,8 @@ int main(void)
 				scanf("%d", &p_i);
 				/* consulta e remove posição para dominação (área sondada previamente)*/
 				consulta = consulta_FilaPrio(fp);
+				matriz[consulta->row][consulta->column].tipo = 'D';
+
 				remove_FilaPrio(fp); /* remove área dominada */
 
 				/* marca área livre */
@@ -148,7 +150,7 @@ int main(void)
 				{
 					for(c=(column_l-1); c<=(column_l+1); c++)
 					{
-						if(matriz[l][c].tipo != 'D' && matriz[l][c].tipo != 'L')
+						if(matriz[l][c].tipo != 'D' && matriz[l][c].tipo != 'L' && matriz[l][c].tipo != 'S')
 						{
 							matriz[l][c].row = l;
 							matriz[l][c].column = c;
