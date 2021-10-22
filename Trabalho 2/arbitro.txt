@@ -1,0 +1,37 @@
+100 200 3 7
+sondagem 101 201 23640
+dominacao 23640
+sondagem 101 200 29956
+dominacao 29956
+sondagem 102 202 35074
+sondagem 102 201 35721
+dominacao 35074
+sondagem 102 201 35721
+sondagem 102 200 48113
+sondagem 102 199 9368
+dominacao 9368
+sondagem 103 203 395
+sondagem 103 202 10838
+sondagem 103 201 31879
+sondagem 102 203 24033
+dominacao 24033
+sondagem 103 200 29016
+sondagem 103 199 21331
+sondagem 103 198 61591
+sondagem 102 200 48113
+sondagem 102 199 9368
+dominacao 9368
+sondagem 103 204 29962
+sondagem 103 203 395
+sondagem 103 202 10838
+sondagem 102 204 47784
+sondagem 102 203 24033
+sondagem 102 202 35074
+dominacao 395
+sondagem 103 200 29016
+sondagem 103 199 21331
+sondagem 103 198 61591
+sondagem 102 200 48113
+sondagem 102 199 9368
+sondagem 102 198 36895
+sondagem 101 200 29956

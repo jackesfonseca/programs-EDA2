@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #define MAX 262139
 
 /*
@@ -35,6 +36,7 @@ typedef struct mat Matriz;
 
 Matriz **hash_init(int TABLE_SIZE);
 void liberaHash(Matriz **hash_table, int TABLE_SIZE);
+int calculaDivisao(int chave, int TABLE_SIZE);
 FilaPrio* cria_FilaPrio();
 void libera_FilaPrio(FilaPrio *fp);
 int estaCheia_FilaPrio(FilaPrio *fp);
@@ -57,7 +59,7 @@ int main(void)
 	Matriz *consulta;
 	Pilha *pilha;
 	FilaPrio *fp;
-	int TABLE_SIZE = 1000, EDAzinhos = 1, cont_turnos=0;
+	int TABLE_SIZE = 1000, EDAzinhos = 1, cont_turnos=0, pos_l, pos_c;
 	char command[256];
 
 	matriz = hash_init(TABLE_SIZE);
@@ -66,10 +68,12 @@ int main(void)
 
 	/* valores iniciais */
 	scanf("%d %d %d %d", &row, &column, &p_i, &t_loop); /* lê dados iniciais*/
-	matriz[row][column].row = row;
-	matriz[row][column].column = column;
-	matriz[row][column].pontuacao = p_i;
-	matriz[row][column].tipo = 'D';
+	pos_l = row & 0x7FFFFFFF;
+	pos_c = column & 0x7FFFFFFF;
+	matriz[pos_l][pos_c].row = pos_l;
+	matriz[pos_l][pos_c].column = pos_c;
+	matriz[pos_l][pos_c].pontuacao = p_i;
+	matriz[pos_l][pos_c].tipo = 'D';
 
 	/* DOMINOU */
 	/* armazena informação de área livre nas células adjacentes e insere na pilha */
@@ -82,9 +86,9 @@ int main(void)
 		{
 			if(matriz[l][c].tipo != 'D' && matriz[l][c].tipo != 'L')
 			{
-				matriz[l][c].row = l;
-				matriz[l][c].column = c;
-				matriz[l][c].tipo = 'L';
+				matriz[pos_l][pos_c].row = pos_l;
+				matriz[pos_l][pos_c].column = pos_c;
+				matriz[pos_l][pos_c].tipo = 'L';
 				//printf("linha: %d coluna: %d\n", l, c);
 				insere_pilha(pilha, matriz[l][c]);
 			}
@@ -229,6 +233,17 @@ void liberaHash(Matriz **matriz, int TABLE_SIZE)
 
 	free(matriz);
 }
+
+int calculaDivisao(int chave, int TABLE_SIZE)
+{
+	/* 
+	& - Operação bit a bit
+	0x7FFFFFFF - Maior inteiro 32 bits (evitar overflow)
+	% TABLE_SIZE - Garante que o código hash estará entre 0 e o valor de HASH_TABLE
+	*/
+	return (chave & 0x7FFFFFFF) % TABLE_SIZE; 
+}
+
 
 /* Priority Queue */
 FilaPrio* cria_FilaPrio()
