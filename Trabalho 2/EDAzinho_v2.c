@@ -156,8 +156,8 @@ int main(void)
 			if(strcmp(command, "dominacao") == 0)
 			{
 				scanf("%d", &p_i);
-				/* armazena área dominada */
-
+				/* armazena área dominada na pilha */
+				insere_pilha(pilha, matriz[row][column]);
 
 				/* marca área livre */
 				/* inserir valores livres */
@@ -190,16 +190,19 @@ int main(void)
 			}
 
 			else
-				break;
+				exit(0);
 		}
 
-		printf("dominar %d %d\n", row, column);
+		/* consulta e remove posição para dominação (área sondada previamente)*/
+		consulta = consulta_FilaPrio(fp);
+		printf("dominar %d %d\n", consulta->row, consulta->column);
+		remove_FilaPrio(fp);
 
 		for(i=0; i<EDAzinhos+1; i++)
 		{
-			/* verifica células livres para sondagem */
-			row_l = row;
-			column_l = column;
+			/* verifica células livres para sondagem (Adjacentes à áreas dominadas) */
+			row_l = (*pilha)->dados.row;
+			column_l = (*pilha)->dados.column;
 	
 			for(l=(row_l-1); l<=(row_l+1); l++)
 			{
