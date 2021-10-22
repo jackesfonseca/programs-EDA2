@@ -85,7 +85,7 @@ int main(void)
 				matriz[l][c].row = l;
 				matriz[l][c].column = c;
 				matriz[l][c].tipo = 'L';
-				printf("linha: %d coluna: %d\n", l, c);
+				//printf("linha: %d coluna: %d\n", l, c);
 				insere_pilha(pilha, matriz[l][c]);
 			}
 		}
@@ -119,6 +119,7 @@ int main(void)
 	row_l = (*pilha)->dados.row;
 	column_l = (*pilha)->dados.column;
 	remove_pilha(pilha);
+	//matriz[row_l][column_l].tipo = 'S';
 
 	printf("sondar %d %d\n", row_l, column_l);
 
@@ -155,7 +156,7 @@ int main(void)
 							matriz[l][c].row = l;
 							matriz[l][c].column = c;
 							matriz[l][c].tipo = 'L';
-							printf("linha: %d coluna: %d\n", l, c);
+							//printf("linha: %d coluna: %d\n", l, c);
 							insere_pilha(pilha, matriz[l][c]);
 						}
 					}
