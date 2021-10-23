@@ -80,11 +80,12 @@ int main(void)
 	{
 		for(c=(column_l-1); c<=(column_l+1); c++)
 		{
-			if(matriz[l][c].tipo != 'D')
+			if(matriz[l][c].tipo != 'D' && matriz[l][c].tipo != 'S')
 			{
 				matriz[l][c].row = l;
 				matriz[l][c].column = c;
 				matriz[l][c].tipo = 'L';
+				//printf("[%d, %d]\n", l, c);
 				insere_pilha(pilha, matriz[l][c]);
 			}
 		}
@@ -112,7 +113,7 @@ int main(void)
 	/* consulta e remove posição para dominação (área sondada previamente)*/
 	consulta = consulta_FilaPrio(fp);
 	printf("dominar %d %d\n", consulta->row, consulta->column);
-	//remove_FilaPrio(fp); /* remove área dominada */
+	matriz[consulta->row][consulta->column].tipo = 'D'; /* marco como dominada */
 
 	/* verifica células livres para sondagem (Adjacentes à áreas dominadas) */
 	row_l = (*pilha)->dados.row;
@@ -129,17 +130,15 @@ int main(void)
 		/* turno 1 em diante */
 		for(j=0; j<EDAzinhos+1; j++)
 		{
-			scanf("%s", command);	/* dominar */
+			scanf("%s", command);
 
 			if(strcmp(command, "dominacao") == 0)
 			{
 				scanf("%d", &p_i);
-				/* consulta e remove posição para dominação (área sondada previamente)*/
+
 				consulta = consulta_FilaPrio(fp);
-				remove_FilaPrio(fp); /* remove área dominada */
 
 				/* marca área livre */
-				/* inserir valores livres */
 				row_l = consulta->row; /* row armazena antiga linha dominada */
 				column_l = consulta->column; /* column aramzena antiga coluna dominada */
 
@@ -147,26 +146,30 @@ int main(void)
 				{
 					for(c=(column_l-1); c<=(column_l+1); c++)
 					{
-						if(matriz[l][c].tipo != 'D')
+						if(matriz[l][c].tipo != 'D' && matriz[l][c].tipo != 'S')
 						{
 							matriz[l][c].row = l;
 							matriz[l][c].column = c;
 							matriz[l][c].tipo = 'L';
+							//printf("[%d, %d]\n", l, c);
 							insere_pilha(pilha, matriz[l][c]);
 						}
 					}
 				}
+
+				remove_FilaPrio(fp); /* remove área dominada da fila */
 			}
 
 			else if(strcmp(command, "sondagem") == 0)
 			{
 				scanf("%d %d %d", &row, &column, &p_i);
+				
 				matriz[row][column].row = row;
 				matriz[row][column].column = column;
 				matriz[row][column].pontuacao = p_i;
 				matriz[row][column].tipo = 'S';
 
-				insere_FilaPrio(fp, matriz[row][column], matriz[row][column].pontuacao);				
+				insere_FilaPrio(fp, matriz[row][column], matriz[row][column].pontuacao);
 			}
 
 			else
@@ -176,15 +179,17 @@ int main(void)
 		/* consulta e remove posição para dominação (área sondada previamente)*/
 		consulta = consulta_FilaPrio(fp);
 		printf("dominar %d %d\n", consulta->row, consulta->column);
+		matriz[consulta->row][consulta->column].tipo = 'D';
 
 		for(i=0; i<EDAzinhos+1; i++)
 		{
 			/* verifica células livres para sondagem (Adjacentes à áreas dominadas) */
 			row_l = (*pilha)->dados.row;
 			column_l = (*pilha)->dados.column;
-			remove_pilha(pilha);
 			
 			printf("sondar %d %d\n", row_l, column_l);
+			
+			remove_pilha(pilha);
 		}
 
 		EDAzinhos++;

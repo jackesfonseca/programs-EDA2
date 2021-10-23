@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 #define MAX 262139
 
 /*
@@ -36,7 +35,6 @@ typedef struct mat Matriz;
 
 Matriz **hash_init(int TABLE_SIZE);
 void liberaHash(Matriz **hash_table, int TABLE_SIZE);
-int calculaDivisao(int chave, int TABLE_SIZE);
 FilaPrio* cria_FilaPrio();
 void libera_FilaPrio(FilaPrio *fp);
 int estaCheia_FilaPrio(FilaPrio *fp);
@@ -54,26 +52,24 @@ int remove_pilha(Pilha* pilha);
 int main(void)
 {
 	int row, row_l, column, column_l, p_i, t_loop; /* start game data */
-	int i, j, k, l, c, areas_dominadas[100][100];
+	int i, j, k, l, c;
 	Matriz **matriz;
 	Matriz *consulta;
 	Pilha *pilha;
 	FilaPrio *fp;
-	int TABLE_SIZE = 1000, EDAzinhos = 1, cont_turnos=0, pos_l, pos_c;
+	int TABLE_SIZE = 1000, EDAzinhos = 1, cont_turnos=0, areas_dominadas=0;
 	char command[256];
 
 	matriz = hash_init(TABLE_SIZE);
 	fp = cria_FilaPrio();
 	pilha = cria_pilha();
 
-	/* valores iniciais */
+	/* INÍCIO DO JOGO */
 	scanf("%d %d %d %d", &row, &column, &p_i, &t_loop); /* lê dados iniciais*/
-	pos_l = row & 0x7FFFFFFF;
-	pos_c = column & 0x7FFFFFFF;
-	matriz[pos_l][pos_c].row = pos_l;
-	matriz[pos_l][pos_c].column = pos_c;
-	matriz[pos_l][pos_c].pontuacao = p_i;
-	matriz[pos_l][pos_c].tipo = 'D';
+	matriz[row][column].row = row;
+	matriz[row][column].column = column;
+	matriz[row][column].pontuacao = p_i;
+	matriz[row][column].tipo = 'D';
 
 	/* DOMINOU */
 	/* armazena informação de área livre nas células adjacentes e insere na pilha */
@@ -84,12 +80,12 @@ int main(void)
 	{
 		for(c=(column_l-1); c<=(column_l+1); c++)
 		{
-			if(matriz[l][c].tipo != 'D' && matriz[l][c].tipo != 'L')
+			if(matriz[l][c].tipo != 'D' && matriz[l][c].tipo != 'S')
 			{
-				matriz[pos_l][pos_c].row = pos_l;
-				matriz[pos_l][pos_c].column = pos_c;
-				matriz[pos_l][pos_c].tipo = 'L';
-				//printf("linha: %d coluna: %d\n", l, c);
+				matriz[l][c].row = l;
+				matriz[l][c].column = c;
+				matriz[l][c].tipo = 'L';
+				//printf("[%d, %d]\n", l, c);
 				insere_pilha(pilha, matriz[l][c]);
 			}
 		}
@@ -105,99 +101,22 @@ int main(void)
 	printf("fimturno\n");
 	fflush(stdout);
 
-	/* turno 0 */
-	scanf("%s %d %d %d", command, &row, &column, &p_i);	/* sondar */
-	matriz[row][column].row = row;
-	matriz[row][column].column = column;
-	matriz[row][column].pontuacao = p_i;
-	matriz[row][column].tipo = 'S';
-
-	insere_FilaPrio(fp, matriz[row][column], matriz[row][column].pontuacao); /* armazena a próxima posição a ser dominada */
-
-	/* consulta e remove posição para dominação (área sondada previamente)*/
-	consulta = consulta_FilaPrio(fp);
-	printf("dominar %d %d\n", consulta->row, consulta->column);
-	//remove_FilaPrio(fp); /* remove área dominada */
-
-	/* verifica células livres para sondagem (Adjacentes à áreas dominadas) */
-	row_l = (*pilha)->dados.row;
-	column_l = (*pilha)->dados.column;
-	remove_pilha(pilha);
-	//matriz[row_l][column_l].tipo = 'S';
-
-	printf("sondar %d %d\n", row_l, column_l);
-
-	printf("fimturno\n");
-	fflush(stdout);
 
 	while((t_loop-1) > cont_turnos)
 	{
-		/* turno 1 em diante */
-		for(j=0; j<EDAzinhos+1; j++)
+		if(dominar == 1)
 		{
-			scanf("%s", command);	/* dominar */
-
-			if(strcmp(command, "dominacao") == 0)
-			{
-				scanf("%d", &p_i);
-				/* consulta e remove posição para dominação (área sondada previamente)*/
-				consulta = consulta_FilaPrio(fp);
-				matriz[consulta->row][consulta->column].tipo = 'D';
-
-				remove_FilaPrio(fp); /* remove área dominada */
-
-				/* marca área livre */
-				/* inserir valores livres */
-				row_l = consulta->row; /* row armazena antiga linha dominada */
-				column_l = consulta->column; /* column aramzena antiga coluna dominada */
-
-				for(l=(row_l-1); l<=(row_l+1); l++)
-				{
-					for(c=(column_l-1); c<=(column_l+1); c++)
-					{
-						if(matriz[l][c].tipo != 'D' && matriz[l][c].tipo != 'L' && matriz[l][c].tipo != 'S')
-						{
-							matriz[l][c].row = l;
-							matriz[l][c].column = c;
-							matriz[l][c].tipo = 'L';
-							//printf("linha: %d coluna: %d\n", l, c);
-							insere_pilha(pilha, matriz[l][c]);
-						}
-					}
-				}
-			}
-
-			else if(strcmp(command, "sondagem") == 0)
-			{
-				scanf("%d %d %d", &row, &column, &p_i);
-				matriz[row][column].row = row;
-				matriz[row][column].column = column;
-				matriz[row][column].pontuacao = p_i;
-				matriz[row][column].tipo = 'S';
-
-				insere_FilaPrio(fp, matriz[row][column], matriz[row][column].pontuacao);				
-			}
-
-			else
-				exit(0);
+			printf("dominar %d %d\n", );
 		}
 
-		/* consulta e remove posição para dominação (área sondada previamente)*/
-		consulta = consulta_FilaPrio(fp);
-		printf("dominar %d %d\n", consulta->row, consulta->column);
-
-		for(i=0; i<EDAzinhos+1; i++)
+		for(i=0; i<EDAzinhos; i++)
 		{
-			/* verifica células livres para sondagem (Adjacentes à áreas dominadas) */
-			row_l = (*pilha)->dados.row;
-			column_l = (*pilha)->dados.column;
-			remove_pilha(pilha);
-			
-			printf("sondar %d %d\n", row_l, column_l);
+			printf("sondar %d %d\n", );
 		}
 
 		EDAzinhos++;
 		cont_turnos++;
+		dominar=1;
 
 		printf("fimturno\n");
 		fflush(stdout);
@@ -233,17 +152,6 @@ void liberaHash(Matriz **matriz, int TABLE_SIZE)
 
 	free(matriz);
 }
-
-int calculaDivisao(int chave, int TABLE_SIZE)
-{
-	/* 
-	& - Operação bit a bit
-	0x7FFFFFFF - Maior inteiro 32 bits (evitar overflow)
-	% TABLE_SIZE - Garante que o código hash estará entre 0 e o valor de HASH_TABLE
-	*/
-	return (chave & 0x7FFFFFFF) % TABLE_SIZE; 
-}
-
 
 /* Priority Queue */
 FilaPrio* cria_FilaPrio()
@@ -284,7 +192,7 @@ int insere_FilaPrio(FilaPrio *fp, Matriz matriz, int prio)
 		return 0;
 
 	fp->dados[fp->qtd] = matriz;
-	rebaixarElemento(fp, fp->qtd);
+	promoverElemento(fp, fp->qtd);
 	fp->qtd++;
 	return 1;
 }
@@ -316,7 +224,7 @@ int remove_FilaPrio(FilaPrio *fp)
 
 	fp->qtd--;
 	fp->dados[0] = fp->dados[fp->qtd];
-	promoverElemento(fp, 0);
+	rebaixarElemento(fp, 0);
 	return 1;
 }
 
@@ -357,6 +265,7 @@ Matriz *consulta_FilaPrio(FilaPrio *fp)
 		return NULL;
 
 	return &(fp->dados[fp->qtd-1]);
+	//return &(fp->dados[1]);
 }
 
 /* stack */
