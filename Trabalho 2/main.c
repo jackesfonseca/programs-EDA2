@@ -132,6 +132,8 @@ int main(void)
 		{
 			//printf("tipo:%c\n", (*pilha)->dados.tipo);
 		}
+
+		/* LEITURA */
 		for (j = 0; j < EDAzinhos + 1; j++)
 		{
 			scanf("%s", command); /* dominar */
@@ -198,6 +200,7 @@ int main(void)
 				exit(0);
 		}
 
+		/* IMPRESSÃO */
 		/* consulta e remove posição para dominação (área sondada previamente)*/
 		consulta = consulta_FilaPrio(fp);
 		//printf("%d ultimo q pegou:%d %d\n", consulta->row, consulta->column);
