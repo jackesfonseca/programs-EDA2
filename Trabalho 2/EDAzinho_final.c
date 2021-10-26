@@ -15,7 +15,7 @@ int M = 150000;
 
 /*
 	sondagem L' C' P
-	dominacao P
+	dominacao
 */
 
 struct mat
@@ -62,9 +62,6 @@ void expand(int chave);
 Matriz HTsearch(int chave);
 int HTMudaChave(int chave);
 void HTinsert(Matriz item, int chave);
-//
-Matriz **hash_init(int TABLE_SIZE);
-void liberaHash(Matriz **hash_table, int TABLE_SIZE);
 FilaPrio *cria_FilaPrio();
 void libera_FilaPrio(FilaPrio *fp);
 int estaCheia_FilaPrio(FilaPrio *fp);
@@ -74,10 +71,6 @@ void promoverElemento(FilaPrio *fp, int filho);
 int remove_FilaPrio(FilaPrio *fp);
 void rebaixarElemento(FilaPrio *fp, int pai);
 Matriz consulta_FilaPrio(FilaPrio *fp);
-/*Pilha *cria_pilha();
-void libera_pilha(Pilha *pilha);
-int insere_pilha(Pilha *pilha, struct mat item);
-int remove_pilha(Pilha *pilha);*/
 
 int main(void)
 {
@@ -160,7 +153,7 @@ int main(void)
   printf("fimturno\n");
   fflush(stdout);
   //pede a sondagem do arbitro
-  scanf(" %*s %*ld %*ld %*ld");
+  //scanf(" %*s %*ld %*ld %*ld");
   for (long t = 1; t < Turnos; t++)
   {
     if (t == 1)
@@ -194,7 +187,7 @@ int main(void)
             {
               //printf("Linha:%d Coluna%d\n", l, c);
               //printf("passou aq\n");
-              printf("sondar %ld %ld\n", l, c);
+              printf("sondar %lld %lld\n", l, c);
               Item.row = l;
               Item.column = c;
               Item.tipo = 'S';
@@ -221,10 +214,10 @@ int main(void)
       status = 0;
       printf("fimturno\n");
       fflush(stdout);
-      scanf(" %*s %*ld");
+      //scanf(" %*s %*ld");
       for (int i = 0; i < contador; i++)
       {
-        scanf(" %s %lld %lld %lld", &command, &row_l, &column_l, &pont_atual);
+        scanf(" %s %lld %lld %lld", command, &row_l, &column_l, &pont_atual);
         //printf("linha inserida:%lld coluna inserida:%lld pontuacao inserida:%lld\n",row_l,column_l,pont_atual );
         chave = abs((((int)((row_l + 1) * pi) - (column_l + 1)) + ((int)(((column_l + 1) * pi) - (column_l + 1))) * (column_l + 1) + (row_l + 1)) % M);
         //printf("chave:%lld\n",Item.chave);
@@ -295,13 +288,13 @@ int main(void)
       status = 0;
       printf("fimturno\n");
       fflush(stdout);
-      scanf(" %s %lld", &command, &pont_atual);
+      scanf(" %s %lld", command, &pont_atual);
       remove_FilaPrio(filaPrio);
       for (int i = 0; i < contador; i++)
       {
         //printf("estou no for\n");
         //printf("Dominados>1 Linha:%d Coluna:%d\n", Dominados[2].row, Dominados[2].column);
-        scanf(" %s %lld %lld %lld", &command, &row_l, &column_l, &pont_atual);
+        scanf(" %s %lld %lld %lld", command, &row_l, &column_l, &pont_atual);
         chave = abs((((int)((row_l + 1) * pi) - (column_l + 1)) + ((int)(((column_l + 1) * pi) - (column_l + 1))) * (column_l + 1) + (row_l + 1)) % M);
         indice = HTMudaChave(chave);
         ht[indice].pontuacao = pont_atual;
@@ -321,29 +314,6 @@ int main(void)
   libera_FilaPrio(filaPrio);
 
   return 0;
-}
-//* Hash Table */
-Matriz **hash_init(int TABLE_SIZE)
-{
-  Matriz **matriz;
-  int i;
-
-  matriz = (Matriz **)malloc(sizeof(Matriz *) * TABLE_SIZE);
-
-  for (i = 0; i < TABLE_SIZE; i++)
-    matriz[i] = (Matriz *)malloc(sizeof(Matriz) * TABLE_SIZE);
-
-  return matriz;
-}
-
-void liberaHash(Matriz **matriz, int TABLE_SIZE)
-{
-  int i;
-
-  for (i = 0; i < TABLE_SIZE; i++)
-    free(matriz[i]);
-
-  free(matriz);
 }
 
 /* Priority Queue */
@@ -466,61 +436,6 @@ Matriz consulta_FilaPrio(FilaPrio *fp)
   return (fp->dados[0]);
 }
 
-/* stack */
-/*Pilha *cria_pilha()
-{
-  Pilha *pilha = (Pilha *)malloc(sizeof(Pilha));
-  if (pilha != NULL)
-    *pilha = NULL;
-
-  return pilha;
-}
-
-void libera_pilha(Pilha *pilha)
-{
-  if (pilha != NULL)
-  {
-    Elem *no;
-    while ((*pilha) != NULL)
-    {
-      no = *pilha;
-      *pilha = (*pilha)->prox;
-      free(no);
-    }
-    free(pilha);
-  }
-}
-
-int insere_pilha(Pilha *pilha, struct mat item)
-{
-  if (pilha == NULL)
-    return 0;
-
-  Elem *no = (Elem *)malloc(sizeof(Elem));
-  if (no == NULL)
-    return 0;
-
-  no->dados = item;
-  no->prox = (*pilha);
-  *pilha = no;
-  return 1;
-}
-
-int remove_pilha(Pilha *pilha)
-{
-  if (pilha == NULL)
-    return 0;
-
-  if ((*pilha) == NULL)
-    return 0;
-
-  Elem *no = *pilha;
-  *pilha = no->prox;
-  free(no);
-
-  return -1;
-}*/
-
 //double hash funcoes
 void HTInit(int max)
 {
@@ -548,8 +463,6 @@ int HTCount()
 {
   return N;
 }
-
-void expand(int chave);
 
 void HTinsert(Matriz item, int chave)
 {
