@@ -16,6 +16,7 @@ typedef struct grafo Grafo;
 Grafo *criaGrafo(int nro_vertices, int grau_max, int eh_ponderado);
 void libera_grafo(Grafo *grafo);
 int insere_aresta(Grafo *grafo, int orig, int dest, int eh_digrafo, float peso);
+int remove_aresta(Grafo *grafo, int orig, int dest, int eh_digrafo);
 
 int main(void)
 {
@@ -98,8 +99,39 @@ int insere_aresta(Grafo *grafo, int orig, int dest, int eh_digrafo, float peso)
 
 	grafo->grau[orig]++;
 
-	if(eh_digrafo == 0)
+	if(eh_digrafo == 0) /* não dígrafo */
 		insere_aresta(grafo, dest, orig, 1, peso); /* insert another vertex if it's a digraph */
 
-	return 0;
+	return 1;
+}
+
+int remove_aresta(Grafo *grafo, int orig, int dest, int eh_digrafo)
+{
+	if(grafo == NULL)
+		return 0;
+
+	if(orig < 0 || orig >= grafo->nro_vertices)
+		return 0;
+
+	if(dest < 0|| dest >= garfo->nro_vertices)
+		return 0;
+
+	int i;
+
+	while(i < grafo->grau[orig] && grafo->arestas[orig][i] != dest)
+		i++;
+
+	if(i == grafo-<grau[orig])
+		return 0;
+
+	grafo->grau[orig]--;
+	grafo->arestas[orig][i] = grafo->arestas[orig][grafo->grau[orig]];
+
+	if(grafo->eh_ponderado)
+		grafo->pesos[orig][i] = grafo->pesos[orig][grafo->grau[orig]];
+
+	if(eh_digrafo == 0)
+		remove_aresta(grafo, dest, orig, 1);
+
+	return 1;
 }
