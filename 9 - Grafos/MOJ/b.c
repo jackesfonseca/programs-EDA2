@@ -24,33 +24,21 @@ int pesquisa_grafo(Grafo *grafo, int ini, int *visitado);
 int main(void)
 {
 	Grafo *grafo;
-	int i, eh_digrafo=0;
+	int V, eh_digrafo=0, v, w;
+	int cont=0, i, conexos;
+	int *vis;
 
-	grafo = cria_grafo(5, 5, 0);
-	insere_aresta(grafo, 0, 1, eh_digrafo, 0);
-	insere_aresta(grafo, 1, 3, eh_digrafo, 0);
-	insere_aresta(grafo, 1, 2, eh_digrafo, 0);
-	insere_aresta(grafo, 2, 4, eh_digrafo, 0);
-	insere_aresta(grafo, 3, 0, eh_digrafo, 0);
-	insere_aresta(grafo, 3, 4, eh_digrafo, 0);
-	insere_aresta(grafo, 4, 1, eh_digrafo, 0);
-	int vis[5];
+	scanf("%d", &V);
 
-	/*grafo = cria_grafo(6, 6, 0);
-	insere_aresta(grafo, 0, 1, eh_digrafo, 0);
-	insere_aresta(grafo, 2, 3, eh_digrafo, 0);
-	insere_aresta(grafo, 2, 4, eh_digrafo, 0);
-	insere_aresta(grafo, 4, 5, eh_digrafo, 0);	
-	int vis[6];*/
+	grafo = cria_grafo(V, V, 0);
+	vis = malloc(sizeof(int) * V);
 
-	//dfs(grafo, 0, vis);
-	int conexos = pesquisa_grafo(grafo, 0, vis);
+	while(scanf("%d %d", &v, &w) != EOF)
+		insere_aresta(grafo, v, w, eh_digrafo, 0);
 
-	//printf("%d\n", grafo->grau_max);
+	conexos = pesquisa_grafo(grafo, 0, vis);
+
 	printf("%d\n", conexos);
-
-	/*for(i=0; i<(sizeof(vis)/sizeof(int)); i++)
-		printf("%d\n", vis[i]);*/
 
 	libera_grafo(grafo);
 
@@ -162,7 +150,9 @@ int remove_aresta(Grafo *grafo, int orig, int dest, int eh_digrafo)
 
 int dfs_aux(Grafo *grafo, int ini, int *visitado)
 {
-	int i, cont = 1;
+	int i; 
+	//int cont = 1;
+
 	for(i=0; i<grafo->nro_vertices; i++)
 		visitado[i] = 0;
 
@@ -174,7 +164,7 @@ int dfs(Grafo *grafo, int ini, int *visitado, int cont)
 	int i;
 	visitado[ini] = cont;
 
-	for(i=0; i<grafo->grau_max; i++) /* i<grafo->grau[ini] */
+	for(i=0; i<grafo->grau_max; i++)
 	{
 		if(!visitado[grafo->arestas[ini][i]])
 			dfs(grafo, grafo->arestas[ini][i], visitado, cont+1);
@@ -189,7 +179,7 @@ int pesquisa_grafo(Grafo *grafo, int ini, int *visitado)
 
 	for(i=0; i<grafo->grau_max; i++)
 	{
-		printf("[visitado] %d\n", visitado[i]);
+		//printf("[visitado] %d\n", visitado[i]);
 		if(visitado[i] == 0)
 		{
 			dfs(grafo, i, visitado, cont);
