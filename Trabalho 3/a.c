@@ -17,41 +17,28 @@ Grafo *cria_grafo(int nro_vertices, int grau_max, int eh_ponderado);
 void libera_grafo(Grafo *grafo);
 int insere_aresta(Grafo *grafo, int orig, int dest, int eh_digrafo, float peso);
 int remove_aresta(Grafo *grafo, int orig, int dest, int eh_digrafo);
-int dfs(Grafo *grafo, int ini, int *visitado, int cont, int qtd);
+int dfs(Grafo *grafo, int ini, int *visitado, int cont);
 int dfs_aux(Grafo *grafo, int ini, int *visitado);
 int pesquisa_grafo(Grafo *grafo, int ini, int *visitado);
 
 int main(void)
 {
 	Grafo *grafo;
-	int i, eh_digrafo=0;
+	int V, eh_digrafo=0, v, w;
+	int cont=0, i, conexos;
+	int *vis;
 
-	/*grafo = cria_grafo(5, 5, 0);
-	insere_aresta(grafo, 0, 1, eh_digrafo, 0);
-	insere_aresta(grafo, 1, 3, eh_digrafo, 0);
-	insere_aresta(grafo, 1, 2, eh_digrafo, 0);
-	insere_aresta(grafo, 2, 4, eh_digrafo, 0);
-	insere_aresta(grafo, 3, 0, eh_digrafo, 0);
-	insere_aresta(grafo, 3, 4, eh_digrafo, 0);
-	insere_aresta(grafo, 4, 1, eh_digrafo, 0);
-	int vis[5];*/
+	scanf("%d", &V);
 
-	grafo = cria_grafo(6, 6, 0);
-	insere_aresta(grafo, 0, 1, eh_digrafo, 0);
-	insere_aresta(grafo, 2, 3, eh_digrafo, 0);
-	insere_aresta(grafo, 2, 4, eh_digrafo, 0);
-	insere_aresta(grafo, 4, 5, eh_digrafo, 0);	
-	int vis[6];
+	grafo = cria_grafo(V, V, 0);
+	vis = malloc(sizeof(int) * V);
 
-	//dfs(grafo, 0, vis);
-	int conexos = pesquisa_grafo(grafo, 0, vis);
+	while(scanf("%d %d", &v, &w) != EOF)
+		insere_aresta(grafo, v, w, eh_digrafo, 0);
 
-	//printf("%d\n", grafo->grau_max);
-	//printf("%d\n", conexos);
+	conexos = pesquisa_grafo(grafo, 0, vis);
 
-	for(i=0; i<grafo->grau_max; i++)
-		printf("vis[%d] %d\n", i, vis[i]);
-
+	printf("%d\n", conexos);
 
 	libera_grafo(grafo);
 
@@ -163,16 +150,16 @@ int remove_aresta(Grafo *grafo, int orig, int dest, int eh_digrafo)
 
 int dfs_aux(Grafo *grafo, int ini, int *visitado)
 {
-	int i, cont = 1;
+	int i; 
+	//int cont = 1;
+
 	for(i=0; i<grafo->nro_vertices; i++)
 		visitado[i] = 0;
 
 	//dfs(grafo, ini, visitado, cont);
 }
 
-//int flag;
-
-int dfs(Grafo *grafo, int ini, int *visitado, int cont, int qtd)
+int dfs(Grafo *grafo, int ini, int *visitado, int cont)
 {	
 	int i;
 	visitado[ini] = cont;
@@ -180,15 +167,13 @@ int dfs(Grafo *grafo, int ini, int *visitado, int cont, int qtd)
 	for(i=0; i<grafo->grau_max; i++)
 	{
 		if(!visitado[grafo->arestas[ini][i]])
-		{
-			dfs(grafo, grafo->arestas[ini][i], visitado, cont+1, qtd+1);
-		}
+			dfs(grafo, grafo->arestas[ini][i], visitado, cont+1);
 	}
 }
 
 int pesquisa_grafo(Grafo *grafo, int ini, int *visitado)
 {
-	int i, cont=1, conexos=0, qtd=1, flag;
+	int i, cont=1, conexos=0;
 
 	dfs_aux(grafo, ini, visitado); /* marca todos os vértices como não visitado */
 
@@ -197,13 +182,10 @@ int pesquisa_grafo(Grafo *grafo, int ini, int *visitado)
 		//printf("[visitado] %d\n", visitado[i]);
 		if(visitado[i] == 0)
 		{
-			dfs(grafo, i, visitado, cont, qtd);
+			dfs(grafo, i, visitado, cont);
 			conexos++;
 		}
-		//printf("%d\n", i);
 	}
 
-	printf("qtd: %d\n", qtd);
-	//printf("conexos: %d\n", conexos);
 	return conexos;
 }
